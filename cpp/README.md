@@ -1,1 +1,1 @@
-CPP files from Connors's initial NFA to DFA conversion program.
+CPP files from Connor's initial NFA to DFA conversion program.

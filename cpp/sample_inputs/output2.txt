@@ -1,0 +1,18 @@
+reading NFA ... done.
+
+creating corresponding DFA ...
+new DFA state:  1    -->  {1}
+new DFA state:  2    -->  {2,3}
+new DFA state:  3    -->  {4}
+new DFA state:  4    -->  {4,5}
+done.
+
+final DFA:
+Initial State:  1
+Final States:   {4}
+Total States:   4
+State   a                b                c                
+1       {2}              {}               {}               
+2       {}               {2}              {3}              
+3       {4}              {}               {}               
+4       {4}              {}               {}               

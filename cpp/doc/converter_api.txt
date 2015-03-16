@@ -1,0 +1,146 @@
+=====================================
+| Connor Minton
+| March 16, 2015
+| 
+| A rough-draft API for manipulating the conversion algorithm
+=====================================
+
+CONVERTER FUNCTIONS==============
+
+/* This block comment describes the workings of the
+   current C++ program.
+
+   States are numbered 1 through (num states).
+   They are given these numbers as they are added
+   incrementally, and are identified by these numbers.
+
+   The [converter] class defines a nested
+   class [fsa] and contains two instances of the
+   [fsa] class: [nfa] and [dfa] store the NFA and
+   DFA structures respectively. 
+
+   Let c be a [converter] object. The idea is to
+   parse the input for information about the NFA,
+   call the [converter] functions to add the
+   data to the [nfa] object in the [converter],
+   then call c.convert(), and finally print_dfa()
+   to send the formatted DFA to stdout.
+
+   Obviously, printing the formatted DFA file is not
+   what needs to happen. I have proposed some modifications
+   for this project. I would love to get your input
+   on this, but below are my preliminary guesses on
+   what you'll need to control the graphics. Let
+   me know if you have anything you want implemented
+   that is not already.
+*/
+
+class converter {
+  /* In this modified type, you should be able to
+     add any information about the NFA at any time
+     before you start the conversion algorithm. Let
+     N = (Q,sigma,delta,q_0,F) be the input NFA.
+
+     Q: Give each state a unique integer ID, and
+        refer to this ID when identifying
+        transitions, q_0, and F. The set of states
+        will be determined from delta after you
+        are finished defining N.
+
+     sigma: I think all I will do is scan through
+        delta and get the info that way. I.e.,
+        don't worry about setting it for now.
+
+     delta: To add transitions, use
+        set_transition(q,a,R), where
+          int q is the current state of N,
+          char a is the current input symbol,
+          int[] R is the subset of Q that describes
+                the destination states, and
+          delta(q,a) = R.
+
+     q_0: Just call set_initial_state(int id).
+
+     F: Just call set_final_states(int[] ids).
+        If it's more convenient for you, the
+        add_final_state(int id) function 
+        adds to F when you come across an accept state.
+  */
+
+  void add_final_state(int id)
+    /* add the state [id] to the set of final
+       states in the NFA. */
+
+  void set_final_states(int[] ids)
+    /* Sets F to [ids] */
+
+  void convert()
+    /* In the case that you might want to skip the
+       steps in the algorithm, you could call this
+       to finish the conversion. */
+
+  bool step()
+    /* Advances the algorithm one step. Returns
+       true if this step finishes the conversion and
+       false otherwise.
+    
+       I'm not sure how big the step will be yet.
+       I think what I'll do is this:
+       step() will add a transition in the DFA
+       based on the current set of states the
+       converter is considering. I.e., step()
+       advances the conversion algorithm such that
+       one transition on one input symbol has been
+       added from one state to another.
+
+       As for displaying the substeps in this
+       process, like highlighting the sets of
+       states in the original NFA, etc., I will
+       provide functions that let you compute the
+       epsilon closure of an NFA state (which will
+       give you all states reachable from a
+       particular state by epsilon transitions),
+       and others as you see fit.
+    */
+
+  int[] get_dead_states()
+    /* Only use this after the conversion
+       algorithm is complete. This will return the
+       unreachable states in the DFA. I would love
+       to know how you want this information. It
+       would be nice to map {0,...,num_states-1}
+       to the subsets {null, {1}, {2}, {1,2},...}
+       of NFA states. However you want that info
+       is fine with me. */
+
+  void reduce_dfa()
+    /* Eliminate the dead states. I'm sure that
+       this could just as easily be implemented on
+       the front end with the information you get
+       from get_dead_states() */
+
+  int[] epsilon_closure(int id)
+    /* Computes the epsilon closure of the NFA
+       state [id]. Returns the set of states
+       reachable from [id] by epsilon transitions. */
+
+  fsa get_working_dfa()
+    /* In order to step through the conversion
+       algorithm, I'll make an [fsa] object that
+       holds the working automaton. Everything you
+       can find in the formal description of an NFA
+       you will be able to get from this function. */
+
+  fsa get_nfa()
+    /* Just for convenience, the class will hold
+       onto the original NFA if you ever need to
+       reference it. */
+
+  void set_initial_state(int id)
+    /* self-explanatory */
+
+  void set_transition(int from_state, char input, int[] dest_states)
+    /* Adds a transition to the original NFA.
+
+       delta(from_state, input) := dest_states */
+}

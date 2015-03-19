@@ -18,9 +18,15 @@ function FSA(a, b) {
 	testvar = "testvariable";
 }
 
-
+/**
+ * Class functions.
+ * Exactly what you'd think they are.
+ */
 FSA.prototype.test = function() {
 	console.log(testvar);
 };
 
+/**
+ * Export the class.
+ */
 module.exports = FSA;

@@ -4,7 +4,7 @@ var State = require('./state.js');
 var Transition = require('./transition.js');
 var Map = require('./map.js');
 
-var InputExample = require('./input/example-01.js');
+var InputExample = require('./input/example-01.js');  //you could take this as a command line argument that specifies the file name.
 
 //Constructing the NFA in Exam 1, Question 2 as an example
 

@@ -4,26 +4,41 @@
  * but can't be accessed without a getter function 
  * externally.
  */
-var testvar;
-
 
 /**
  * Constructor for FSA class instances.
  * Any public variables for an FSA instance 
  * should be declared here.
+ *
+ * Giving more descriptive names for the
+ * formal (Q, sigma, delta, q_o, F)
+ * 
  */
-function FSA(a, b) {
-	this.a = a;
-	this.b = b;
-	testvar = "testvariable";
+function FSA(states, alphabet, transitions, startState, finalStates) {
+	this.states = states;
+	this.alphabet = alphabet;
+	this.transitions = transitions;
+	this.startState = startState;
+	this.finalStates = finalStates;
+}
+
+/**
+ * Zero-argument constructor.
+ */
+function FSA() {
+	this.states = [];
+	this.alphabet = {};
+	this.transitions = [];
+	this.startState = [];
+	this.finalStates = [];
 }
 
 /**
  * Class functions.
- * Exactly what you'd think they are.
+ * Available externally.
  */
-FSA.prototype.test = function() {
-	console.log(testvar);
+FSA.prototype.print = function() {
+	console.log(this);
 };
 
 /**

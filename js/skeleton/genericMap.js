@@ -3,10 +3,8 @@
  * using a regular javascript object. I usually set
  * something like this up in my javascript projects,
  * mainly for the convenience and clarity of calling
- * something a map.
+ * something a map. - AK
  */
-
-// var contents;
 
 function genericMap() {
 	this.contents = {};
@@ -27,6 +25,12 @@ genericMap.prototype.find = function(key) {
 genericMap.prototype.remove = function(key) {
 	var value = this.find(key);
 	if(value != false) {
+		delete this.contents[key];
+	}
+}
+
+genericMap.prototype.clear = function() {
+	for(var key in this.contents) {
 		delete this.contents[key];
 	}
 }

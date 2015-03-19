@@ -1,11 +1,17 @@
 /**
+ * Dependencies
+ */
+var Map = require('./genericMap.js');
+
+/**
  * Protected variables.
  * Can be accessed by any functions in this script,
  * but can't be accessed without a getter function 
  * externally.
  *
- * !!Important!! Any variables declared outside of the function
- * constructor are singletons.
+ * Don't use this for now as it turns things into 
+ * singletons that we don't necessarily want to be
+ * singletons.
  */
 
 /**
@@ -18,33 +24,40 @@
  * 
  */
 function FSA(states, alphabet, transitions, startState, finalStates) {
-	this.states = states;
-	this.alphabet = alphabet;
-	this.transitions = transitions;
-	this.startState = startState;
-	this.finalStates = finalStates;
-}
-
-/**
- * Zero-argument constructor.
- */
-function FSA() {
-	this.states = [];
-	this.alphabet = {};
-	this.transitions = [];
-	this.startState = [];
-	this.finalStates = [];
+    if (arguments.length !== 5) {
+        this.states = new Map();
+        this.alphabet = {};
+        this.transitions = [];
+        this.startState = [];
+        this.finalStates = [];
+    } else {
+    	this.states = states;
+	    this.alphabet = alphabet;
+	    this.transitions = transitions;
+	    this.startState = startState;
+	    this.finalStates = finalStates;
+    }
 }
 
 /**
  * Class functions.
  * Available externally.
  */
+
+/**
+ * This does a deep print of the entire object and its properties.
+ */
 FSA.prototype.print = function() {
-	console.log(this);
+    console.log('states: ', JSON.stringify(this.states));
+    console.log('alphabet: ', JSON.stringify(this.alphabet));
+    console.log('transitions: ', JSON.stringify(this.transitions));
+    console.log('startState: ', JSON.stringify(this.startState));
+    console.log('finalStates: ', JSON.stringify(this.finalStates));
 };
 
 /**
  * Export the class.
  */
-module.exports = FSA;
+module.exports = function() {
+    return new FSA();
+}

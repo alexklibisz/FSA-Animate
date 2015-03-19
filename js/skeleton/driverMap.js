@@ -29,8 +29,14 @@ m.put('m2', m2);
 console.log(m2.contents);
 console.log("-----");
 
-// //it accepts bad practice
+//it accepts bad practice
 m.put([0,1,2], "why would you do that");
 console.log(m.find([0, 1, 2]));
 console.log("-----");
+
+//you can clear the whole thing
 console.log(m.contents);
+m.clear();
+console.log("-----");
+console.log(m.contents);
+console.log(m2.contents);

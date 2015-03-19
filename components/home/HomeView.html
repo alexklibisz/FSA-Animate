@@ -20,21 +20,17 @@
             <p>This visualization is created as you step through the conversion.</p>
         </div>
     </div>
+    <hr/>
     <div class="row">
         <div class="col-lg-4 col-md-4 col-sm-12">
-            <h3>NFA JSON Input</h3>
-            <p>Create the initial NFA as a JSON object.</p>
-            <div style="height: 300px; width: 100%; border: 1px solid gray"></div>
+            <div ng-include="'components/home/partials/NFAJsonInputPartial.html'"></div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12">
-            <h3>Conversion Tools<h3>
-
-        <div style="height: 300px; width: 100%; border: 1px solid gray"></div>
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-12">
-        <h3>Resulting Delta Transitions</h3>
-            <p>This table is updated as the conversion progresses.</p>
-            <div style="height: 300px; width: 100%; border: 1px solid gray"></div>
+            <div ng-include="'components/home/partials/ConversionToolsPartial.html'"></div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div ng-include="'components/home/partials/DeltaTransitionPartial.html'"></div>
+            
         </div>
     </div>
 </div>

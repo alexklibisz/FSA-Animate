@@ -2,9 +2,14 @@
 	width: 95%;
 	max-width: 1400px;
 }
-h2, h3, h4, h5, h6 {
-	text-decoration: underline;
+.panel {
+	min-height: 390px;
 }
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+}
+
+
 
 footer {
 	border-top: 2px solid black;

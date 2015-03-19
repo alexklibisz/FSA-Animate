@@ -3,6 +3,9 @@
  * Can be accessed by any functions in this script,
  * but can't be accessed without a getter function 
  * externally.
+ *
+ * !!Important!! Any variables declared outside of the function
+ * constructor are singletons.
  */
 
 /**

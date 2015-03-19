@@ -6,19 +6,19 @@
  * something a map.
  */
 
-var contents;
+// var contents;
 
 function genericMap() {
-	contents = {};
+	this.contents = {};
 }
 
 genericMap.prototype.put = function(key, value) {
-	contents[key] = value;
+	this.contents[key] = value;
 }
 
 genericMap.prototype.find = function(key) {
-	if(contents.hasOwnProperty(key)) {
-		return contents[key];
+	if(this.contents.hasOwnProperty(key)) {
+		return this.contents[key];
 	} else {
 		return false;
 	}
@@ -27,16 +27,8 @@ genericMap.prototype.find = function(key) {
 genericMap.prototype.remove = function(key) {
 	var value = this.find(key);
 	if(value != false) {
-		delete contents[key];
+		delete this.contents[key];
 	}
-}
-
-genericMap.prototype.getContents = function() {
-	return contents;
-}
-
-genericMap.prototype.clear = function() {
-	delete contents;
 }
 
 module.exports = genericMap;

@@ -1,0 +1,36 @@
+To use these examples from the command line (more convenient than the browser for now), you should:
+
+1) install nodejs. It's a very powerful Javascript environment, but for our purposes it's just a means for testing this stuff before we get into the browser. On ubuntu it's sudo apt-get install nodejs. But just google it for mac.
+2) install npm (node package manager). In case we end up including more packages.
+3) right now the driver.js and mapDriver.js scripts are "runnable". Execte those from the command line: node driver.js or node driverMap.js
+
+
+This directory contains the following classes:
+converter.js: contains all conversion logic along with a FSA instances 'nfa' and 'dfa'
+
+*js is dynamically typed, so when a put the variable type in parens it can be interpretted more so as a suggestion than a requirement.
+
+fsa.js: generic DFA and/or NFA object. Class variables are:
+	- states (map of State objects keyed on their values)
+	- alphabet (array of characters)
+	- transitions (up to you, see my note in driver.js)
+	- startState (State object)
+	- finalStates (array of State objects)
+
+state.js: represents a state in an FSA. Class variables are:
+	- values (array of integers or characters. This is the value that shows up on a node in an NFA or DFA. I decided to use an array here to accomodate multiple values in the converted DFA - i.e. a node with 1 and 3. If you know a way around this, go for it.)
+	- transitions (array of Transition objects)
+
+transition.js: represents a transition to reachable states via a specific symbol. Class variables are:
+	- id (integer - don't necessarily have to have this)
+	- symbol (character)
+	- reachableStates (array or arrays representing the 'values' in a state)
+
+Also in this directory:
+
+driver.js: an example of how to use the above classes. The example I made constructs the NFA we had on Exam 1, Question 2.
+
+genericMap.js: this is a map implementation with straightforward usage.
+driverMap.js: examples of how to use the map
+
+input/example-01.js: this is a JSON representation of the same example I used in driver.js. This is an example of how a user might input/export an NFA/DFA on the website.

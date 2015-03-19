@@ -1,7 +1,7 @@
 /**
  * Dependencies
  */
-var Map = require('./genericMap.js');
+var Map = require('./map.js');
 
 /**
  * Protected variables.

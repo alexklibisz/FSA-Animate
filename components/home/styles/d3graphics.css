@@ -1,10 +1,11 @@
+
 .node {
-	fill: #ccc;
-	stroke:; #fff;
-	stroke-width: 2px;
+    fill: #ccc;
+    stroke: #fff;
+    stroke-width: 1px;
 }
 
 .link {
-	stroke: #777;
-	stroke-width: 2px;
+    stroke: #777;
+    stroke-width: 2px;
 }

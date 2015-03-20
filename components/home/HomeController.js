@@ -211,27 +211,55 @@ app.controller('HomeController',
                 .nodes(nodes)
                 .links(links);
 
-            force.linkDistance(width/3.05);
+            force.linkDistance(width / 3.05);
 
             var link = svg.selectAll('.link')
                 .data(links)
                 .enter().append('line')
-                .attr('class', 'link');
+                .attr('class', 'link')
+                .attr('x1', function(d) {
+                    return nodes[d.source].x;
+                })
+                .attr('y1', function(d) {
+                    return nodes[d.source].y;
+                })
+                .attr('x2', function(d) {
+                    return nodes[d.target].x;
+                })
+                .attr('y2', function(d) {
+                    return nodes[d.target].y;
+                });
+
 
             var node = svg.selectAll('.node')
                 .data(nodes)
                 .enter().append('circle')
-                .attr('class', 'node');
+                .attr('class', 'node')
+                .attr('r', width / 40)
+                .attr('cx', function(d) {
+                    return d.x;
+                })
+                .attr('cy', function(d) {
+                    return d.y;
+                });
 
-            force.on('end', function() {
-                node.attr('r', width/40)
+            var animating = false;
+            var animationStep = 400;
+
+            force.on('tick', function() {
+
+                //reposition the nodes with a transition
+                node.transition().ease('linear').duration(animationStep)
                     .attr('cx', function(d) {
                         return d.x;
                     })
                     .attr('cy', function(d) {
                         return d.y;
                     });
-                link.attr('x1', function(d) {
+
+                //adjust the links accordingly
+                link.transition().ease('linear').duration(animationStep)
+                    .attr('x1', function(d) {
                         return d.source.x;
                     })
                     .attr('y1', function(d) {
@@ -243,8 +271,51 @@ app.controller('HomeController',
                     .attr('y2', function(d) {
                         return d.target.y;
                     });
+
+                //and stop the animation because we're going step-by-step
+                force.stop();
+
+                if (animating) {
+                    setTimeout(
+                        function() {
+                            force.start();
+                        },
+                        animationStep
+                    );
+                }
             });
-            force.start();
+
+            //User controls
+            d3.select('#advance').on('click', force.start);
+            d3.select('#slow').on('click', function() {
+                //disable the buttons
+                d3.selectAll('button').attr('disabled', 'disabled');
+                animating = true;
+                force.start();
+            });
+
+            // force.on('end', function() {
+            //     node.attr('r', width / 40)
+            //         .attr('cx', function(d) {
+            //             return d.x;
+            //         })
+            //         .attr('cy', function(d) {
+            //             return d.y;
+            //         });
+            //     link.attr('x1', function(d) {
+            //             return d.source.x;
+            //         })
+            //         .attr('y1', function(d) {
+            //             return d.source.y;
+            //         })
+            //         .attr('x2', function(d) {
+            //             return d.target.x;
+            //         })
+            //         .attr('y2', function(d) {
+            //             return d.target.y;
+            //         });
+            // });
+            // force.start();
             console.log("create NFA complete");
         }
 

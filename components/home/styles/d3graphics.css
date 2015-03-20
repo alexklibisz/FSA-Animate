@@ -9,3 +9,7 @@
     stroke: #777;
     stroke-width: 2px;
 }
+
+button#slow {
+    margin-left: 40px;
+}

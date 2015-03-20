@@ -5,6 +5,11 @@ app.controller('HomeController',
             console.log("create NFA called");
             var width = 450,
                 height = 310;
+
+            var svg = d3.select('#NFA').append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
             var graph = {
                 "nodes": [{
                     "x": 208.992345,
@@ -199,57 +204,42 @@ app.controller('HomeController',
                 }]
             };
 
+
             // Extract the nodes and links from the data.
             var nodes = graph.nodes,
                 links = graph.links;
 
-            var svg = d3.select('#NFA').append('svg')
-                .attr('width', width)
-                .attr('height', height);
+            //Initialize the force layout.
             var force = d3.layout.force()
                 .size([width, height])
                 .nodes(nodes)
                 .links(links);
 
+            //Define linkDistance
             force.linkDistance(width / 3.05);
 
+            //Next we'll add the nodes and links to the visualization.
+            //Links first so that nodes are on top of them. 
             var link = svg.selectAll('.link')
                 .data(links)
                 .enter().append('line')
-                .attr('class', 'link')
-                .attr('x1', function(d) {
-                    return nodes[d.source].x;
-                })
-                .attr('y1', function(d) {
-                    return nodes[d.source].y;
-                })
-                .attr('x2', function(d) {
-                    return nodes[d.target].x;
-                })
-                .attr('y2', function(d) {
-                    return nodes[d.target].y;
-                });
+                .attr('class', 'link');
 
-
+            // Now it's the nodes turn. Each node is drawn as a circle.
             var node = svg.selectAll('.node')
                 .data(nodes)
                 .enter().append('circle')
-                .attr('class', 'node')
-                .attr('r', width / 40)
-                .attr('cx', function(d) {
-                    return d.x;
-                })
-                .attr('cy', function(d) {
-                    return d.y;
-                });
+                .attr('class', 'node');
 
-            var animating = false;
-            var animationStep = 400;
+            // We're about to tell the force layout to start its
+            // calculations. We do, however, want to know when those
+            // calculations are complete, so before we kick things off
+            // we'll define a function that we want the layout to call
+            // once the calculations are done.
+            force.on('end', function() {
 
-            force.on('tick', function() {
-
-                //reposition the nodes with a transition
-                node.transition().ease('linear').duration(animationStep)
+                //Reposition the nodes.
+                node.attr('r', width / 45)
                     .attr('cx', function(d) {
                         return d.x;
                     })
@@ -257,9 +247,8 @@ app.controller('HomeController',
                         return d.y;
                     });
 
-                //adjust the links accordingly
-                link.transition().ease('linear').duration(animationStep)
-                    .attr('x1', function(d) {
+                //Reposition the links
+                link.attr('x1', function(d) {
                         return d.source.x;
                     })
                     .attr('y1', function(d) {
@@ -272,50 +261,9 @@ app.controller('HomeController',
                         return d.target.y;
                     });
 
-                //and stop the animation because we're going step-by-step
-                force.stop();
-
-                if (animating) {
-                    setTimeout(
-                        function() {
-                            force.start();
-                        },
-                        animationStep
-                    );
-                }
             });
 
-            //User controls
-            d3.select('#advance').on('click', force.start);
-            d3.select('#slow').on('click', function() {
-                //disable the buttons
-                d3.selectAll('button').attr('disabled', 'disabled');
-                animating = true;
-                force.start();
-            });
-
-            // force.on('end', function() {
-            //     node.attr('r', width / 40)
-            //         .attr('cx', function(d) {
-            //             return d.x;
-            //         })
-            //         .attr('cy', function(d) {
-            //             return d.y;
-            //         });
-            //     link.attr('x1', function(d) {
-            //             return d.source.x;
-            //         })
-            //         .attr('y1', function(d) {
-            //             return d.source.y;
-            //         })
-            //         .attr('x2', function(d) {
-            //             return d.target.x;
-            //         })
-            //         .attr('y2', function(d) {
-            //             return d.target.y;
-            //         });
-            // });
-            // force.start();
+            force.start();
             console.log("create NFA complete");
         }
 

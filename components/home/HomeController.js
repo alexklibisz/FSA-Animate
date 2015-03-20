@@ -58,6 +58,7 @@ app.controller('HomeController',
                     });
             });
             force.start();
+            console.log("create NFA complete");
         }
 
     });

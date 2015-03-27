@@ -1,36 +1,75 @@
 app.controller('HomeController',
     function($scope, $location) {
-        
-        $scope.drawSimpleNFA = function() {
-            var container = d3.select("#NFA").append("svg").attr("width", "600").attr("height", "310");
 
-            var circleData = [
-                { "id": 0, "cx": 170, "cy": 130, "radius": 40, "color": randomColor() },
-                { "id": 1, "cx": 60, "cy": 60, "radius": 20, "color": randomColor() }
-            ];
+        $scope.drawSimpleNFA = function() {
+            var width = 610,
+                height = 310;
+
+            var container = d3.select("#NFA").append("svg").attr("width", width).attr("height", height);
+
+            var circleData = [{
+                "id": 0,
+                "cx": 170,
+                "cy": 130,
+                "radius": 40,
+                "color": randomColor()
+            }, {
+                "id": 1,
+                "cx": 60,
+                "cy": 60,
+                "radius": 20,
+                "color": randomColor()
+            }];
 
             var circles = container.selectAll("circle")
-                           .data(circleData)
-                           .enter()
-                           .append("circle");
+                .data(circleData)
+                .enter()
+                .append("circle");
 
-           var circleAttributes = circles
-                                   .attr("cx", function (d) { return d.cx; })
-                                   .attr("cy", function (d) { return d.cy; })
-                                   .attr("r", function (d) { return d.radius; })
-                                   .style("fill", function (d) { return d.color; });
+            var drag = d3.behavior.drag()
+                .on("drag", dragmove);
+
+            var circleAttributes = circles
+                // .attr("cx", function(d) {
+                //     return d.cx;
+                // })
+                // .attr("cy", function(d) {
+                //     return d.cy;
+                // })
+                .attr("r", function(d) {
+                    return d.radius;
+                })
+                .style("fill", function(d) {
+                    return d.color;
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + d.cx + "," + d.cy + ")"
+                })
+                .call(drag);
 
             //Add the SVG Text Element to the svgContainer
             var text = container.selectAll("text")
-                                    .data(circleData)
-                                    .enter()
-                                    .append("text");
+                .data(circleData)
+                .enter()
+                .append("text");
 
             //Add SVG Text Element Attributes
             var textLabels = text
-                             .attr("x", function(d) { return d.cx - 2; })
-                             .attr("y", function(d) { return d.cy; })
-                             .text( function (d) { return d.id; })
+                .attr("x", function(d) {
+                    return d.cx - 2;
+                })
+                .attr("y", function(d) {
+                    return d.cy;
+                })
+                .text(function(d) {
+                    return d.id;
+                })
+        }
+
+        function dragmove(d) {
+            var x = d3.event.x;
+            var y = d3.event.y;
+            d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
         }
 
         function randomColor() {

@@ -1,6 +1,10 @@
 app.controller('HomeController',
     function($scope, $location) {
 
+        $scope.createCircle = function() {
+            console.log("createCircle()");
+        }
+
         $scope.drawSimpleNFA = function() {
             var width = 610,
                 height = 310;

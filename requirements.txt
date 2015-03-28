@@ -1,0 +1,9 @@
+Events:
+- shift+click in svg container: open an input dialog, enter a node label, create a new node with that label.
+- click on node: set selectedNode variable, change node color a darker shade
+- drag node: update the node location
+- press delete: remove the selectedNode from the node list
+
+Structure: 
+- FSA Model that represents the NFA and the DFA. This contains all d3 interaction for creating and modifying the NFA.
+- Controller interprets the events and calls the correct NFA/DFA function (i.e. controller recognizes a shift+click, opens a dialog box, accepts the label input, and calls NFA.addNode(label).)

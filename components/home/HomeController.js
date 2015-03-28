@@ -1,5 +1,12 @@
 app.controller('HomeController',
-    function($scope, $location) {
+    function($scope, $location, FSAModel) {
+
+        $scope.NFA = new FSAModel("#NFA", [], []);
+        $scope.DFA = new FSAModel("#DFA", [], []);
+
+
+        //http://jsfiddle.net/mdml/da37B/
+        //http://jsfiddle.net/EMNGq/14/
 
         // Initialization
         $scope.onClickResult = "";
@@ -13,18 +20,26 @@ app.controller('HomeController',
         };
 
         $scope.onClick = function($event) {
-            console.log($event);
-            console.log($event.currentTarget);
 
-            var x = $event.layerX;
-            var y = $event.layerY;
+            $scope.NFA.test();
+            $scope.DFA.test();
 
-            $scope.container.append("circle")
-                .attr("transform", "translate(" + x + "," + y + ")")
-                .attr("r", "5")
-                .attr("class", "dot")
-                .style("cursor", "pointer")
-                .call(drag);
+            // console.log($event);
+            // console.log($event.currentTarget);
+
+            // var label = prompt("Enter node label.", "");
+
+            // alert(label);
+
+            // var x = $event.layerX;
+            // var y = $event.layerY;
+
+            // $scope.container.append("circle")
+            //     .attr("transform", "translate(" + x + "," + y + ")")
+            //     .attr("r", "5")
+            //     .attr("class", "dot")
+            //     .style("cursor", "pointer")
+            //     .call(drag);
 
         }
 

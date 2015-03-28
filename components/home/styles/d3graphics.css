@@ -1,6 +1,10 @@
 
 svg {
 	background-color: #FFF;
+	border: 1px solid black;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
 }
 
 circle {
@@ -21,4 +25,9 @@ circle {
 
 button#slow {
     margin-left: 40px;
+}
+
+#NFA { 
+	border: 1px solid black;
+	padding: 0px;
 }

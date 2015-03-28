@@ -1,9 +1,32 @@
 app.controller('HomeController',
     function($scope, $location) {
 
-        $scope.createCircle = function() {
-            console.log("createCircle()");
+        // Initialization
+        $scope.onClickResult = "";
+        $scope.onKeyDownResult = "";
+        $scope.onKeyUpResult = "";
+
+        // Utility functions
+
+        var getKeyboardEventResult = function(keyEvent, keyEventDesc) {
+            return keyEventDesc + " (keyCode: " + (window.event ? keyEvent.keyCode : keyEvent.which) + ")";
+        };
+
+        $scope.onClick = function($event) {
+            console.log($event);
+            //var point = d3.mouse();
+            //var p = {x: point[0], y: point[1] };
         }
+
+        $scope.onKeyDown = function($event) {
+            $scope.onKeyDownResult = getKeyboardEventResult($event, "Key down");
+            console.log($scope.onKeyDownResult);
+        };
+
+        $scope.onKeyUp = function($event) {
+            $scope.onKeyUpResult = getKeyboardEventResult($event, "Key up");
+            console.log($scope.onKeyUpResult);
+        };
 
         $scope.drawSimpleNFA = function() {
             var width = 610,
@@ -13,9 +36,9 @@ app.controller('HomeController',
 
             var circleData = [{
                 "id": 0,
-                "cx": 170,
-                "cy": 130,
-                "radius": 40,
+                "cx": 200,
+                "cy": 200,
+                "radius": 20,
                 "color": randomColor()
             }, {
                 "id": 1,

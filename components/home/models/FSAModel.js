@@ -7,7 +7,7 @@ app.service('FSAModel', function() {
         this.links = links;
 
 
-        this.colors = {
+        var colors = {
             default: '#FFCC00',
             selected: 'FFB300'
         }
@@ -18,16 +18,32 @@ app.service('FSAModel', function() {
         }
 
         this.addNode = function(label, $event) {
-            
-            console.log(this.colors.default);
 
-            this.container.append("circle")
-            	.attr("id", label)
-            	.attr("fill", this.colors.default)
-                .attr("transform", "translate(" + $event.layerX + "," + $event.layerY + ")")
+            var node = {
+                id: label,
+                x: $event.layerX,
+                y: $event.layerY
+            };
+
+            this.nodes.push(node);
+
+            //create the container element
+            var g = this.container.append("g")
+                .attr("transform", "translate(" + node.x + "," + node.y + ")");
+            //create and append the node to the container element
+            var svgNode = g.append("circle")
+                .attr("id", node.id)
+                .attr("fill", colors.default)
+                .attr("transform", "translate(" + 0 + "," + 0 + ")")
                 .attr("r", "30")
                 .style("cursor", "pointer");
-
+            //create and append the label to the container element
+            var svgLabel = g.append("text")
+                .text(label)
+                .attr("class", "node-label")
+                .attr("dx", -5)
+                .attr("dy", 5)
+                .style("cursor", "pointer");;
         }
 
         this.printNodes = function() {

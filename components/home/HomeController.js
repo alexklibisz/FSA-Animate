@@ -14,8 +14,18 @@ app.controller('HomeController',
 
         $scope.onClick = function($event) {
             console.log($event);
-            //var point = d3.mouse();
-            //var p = {x: point[0], y: point[1] };
+            console.log($event.currentTarget);
+
+            var x = $event.layerX;
+            var y = $event.layerY;
+
+            $scope.container.append("circle")
+                .attr("transform", "translate(" + x + "," + y + ")")
+                .attr("r", "5")
+                .attr("class", "dot")
+                .style("cursor", "pointer")
+                .call(drag);
+
         }
 
         $scope.onKeyDown = function($event) {
@@ -32,20 +42,21 @@ app.controller('HomeController',
             var width = 610,
                 height = 310;
 
-            var container = d3.select("#NFA").append("svg").attr("width", width).attr("height", height);
+            $scope.container = d3.select("#NFA").append("svg").attr("width", width).attr("height", height);
+            container = $scope.container;
 
             var circleData = [{
                 "id": 0,
                 "cx": 200,
                 "cy": 200,
                 "radius": 20,
-                "color": randomColor()
+                "color": "#FFCC00"
             }, {
                 "id": 1,
                 "cx": 60,
                 "cy": 60,
                 "radius": 20,
-                "color": randomColor()
+                "color": "#FFCC00"
             }];
 
             var circles = container.selectAll("circle")
@@ -91,6 +102,7 @@ app.controller('HomeController',
                 .text(function(d) {
                     return d.id;
                 })
+                .call(drag);
         }
 
         function dragmove(d) {

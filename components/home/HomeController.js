@@ -5,8 +5,7 @@ app.controller('HomeController',
         $scope.DFA = new FSAModel("#DFA", [], []);
 
 
-        //http://jsfiddle.net/mdml/da37B/
-        //http://jsfiddle.net/EMNGq/14/
+        $scope.keyPressed = null;
 
         // Initialization
         $scope.onClickResult = "";
@@ -14,44 +13,27 @@ app.controller('HomeController',
         $scope.onKeyUpResult = "";
 
         // Utility functions
-
         var getKeyboardEventResult = function(keyEvent, keyEventDesc) {
             return keyEventDesc + " (keyCode: " + (window.event ? keyEvent.keyCode : keyEvent.which) + ")";
         };
 
         $scope.onClick = function($event) {
-
-            $scope.NFA.test();
-            $scope.DFA.test();
-
-            // console.log($event);
-            // console.log($event.currentTarget);
-
-            // var label = prompt("Enter node label.", "");
-
-            // alert(label);
-
-            // var x = $event.layerX;
-            // var y = $event.layerY;
-
-            // $scope.container.append("circle")
-            //     .attr("transform", "translate(" + x + "," + y + ")")
-            //     .attr("r", "5")
-            //     .attr("class", "dot")
-            //     .style("cursor", "pointer")
-            //     .call(drag);
+            console.log("click", $event);
+            if ($event.ctrlKey) {
+                alert("create new node");
+            }
 
         }
 
         $scope.onKeyDown = function($event) {
-            $scope.onKeyDownResult = getKeyboardEventResult($event, "Key down");
-            console.log($scope.onKeyDownResult);
+            console.log("key down", $event);
+            // $scope.keyPressed = window.event ? $event.keyCode : $event.which;
         };
 
-        $scope.onKeyUp = function($event) {
-            $scope.onKeyUpResult = getKeyboardEventResult($event, "Key up");
-            console.log($scope.onKeyUpResult);
-        };
+        $scope.onBlur = function() {
+            $scope.keyPressed = null;
+        }
+
 
         $scope.drawSimpleNFA = function() {
             var width = 610,

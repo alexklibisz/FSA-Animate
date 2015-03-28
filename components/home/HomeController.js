@@ -19,6 +19,10 @@ app.controller('HomeController',
 
         $scope.onClick = function($event) {
             console.log("click", $event);
+            if($scope.keyPressed === 16) {
+                $event.ctrlKey = true;
+                $scope.keyPressed = null;
+            }
             if ($event.ctrlKey) {
                 alert("create new node");
             }
@@ -27,7 +31,7 @@ app.controller('HomeController',
 
         $scope.onKeyDown = function($event) {
             console.log("key down", $event);
-            // $scope.keyPressed = window.event ? $event.keyCode : $event.which;
+            $scope.keyPressed = window.event ? $event.keyCode : $event.which;
         };
 
         $scope.onBlur = function() {

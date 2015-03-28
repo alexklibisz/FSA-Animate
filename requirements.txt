@@ -13,5 +13,3 @@ Structure:
         http://jsfiddle.net/EMNGq/14/
 
 
-        // var label = prompt("Enter node label.", "");
-            // alert(label);

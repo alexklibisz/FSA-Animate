@@ -12,7 +12,7 @@ app.controller('HomeController',
 
         //Event Handlers
         $scope.onClick = function($event) {
-            console.log("click", $event);
+            //console.log("click", $event);
             // Shift+Click: add a node to the NFA
             if ($event.shiftKey) {
                 var label = '';

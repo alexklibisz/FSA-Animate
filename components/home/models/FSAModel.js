@@ -5,17 +5,11 @@ app.service('FSAModel', function() {
         this.container = d3.select(container).append("svg").attr("width", width).attr("height", height);
         this.nodes = nodes;
         this.links = links;
-
-
-        var colors = {
-            default: '#FFCC00',
-            selected: 'FFB300'
-        }
+        this.selectedNode = -1;
 
         var behavior = {
-            drag: d3.behavior.drag().on("drag", dragmove)
+            node: d3.behavior.drag().on("drag", dragmove)
         }
-
 
         this.initialize = function() {
 
@@ -34,11 +28,12 @@ app.service('FSAModel', function() {
             //create the container element
             var svgNode = this.container.append("g")
                 .attr("transform", "translate(" + node.x + "," + node.y + ")")
-                .call(behavior.drag);
+                .attr("class", "node")
+                .call(behavior.node)
+                .on("dblclick", selectNode);
             //create and append the node to the container element
             var circle = svgNode.append("circle")
                 .attr("id", node.id)
-                .attr("fill", colors.default)
                 .attr("transform", "translate(" + 0 + "," + 0 + ")")
                 .attr("r", "20")
                 .style("cursor", "pointer");
@@ -47,7 +42,7 @@ app.service('FSAModel', function() {
                 .text(label)
                 .attr("class", "node-label")
                 .attr("dx", -5 * label.length)
-                .attr("dy", 4)
+                .attr("dy", 5)
                 .style("cursor", "pointer");
 
         }
@@ -60,20 +55,28 @@ app.service('FSAModel', function() {
             console.log(this.links);
         }
 
-        function dragmove(d) {
-             var x = d3.event.x;
-             var y = d3.event.y;
-             d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+        selectNode = function(d) {
+        	var node = d3.select(this).select("circle");
+        	var id = node.attr("id");
+        	console.log("selectedNode", this.selectedNode);
+        	console.log("id", id);
+        	if(this.selectedNode !== id) {
+        		node.attr("class", "selected");
+        		this.selectedNode = id;	
+        	} else {
+        		node.attr("class", "node");
+        		this.selectedNode = -1;
+        	}
+        	
+        	console.log(node.attr("id"));
         }
 
-    }
+        function dragmove(d) {
+            var x = d3.event.x;
+            var y = d3.event.y;
+            d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+        }
 
-
-
-    function dragmove(d) {
-        var x = d3.event.x;
-        var y = d3.event.y;
-        d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
     }
 
     return FSAModel;

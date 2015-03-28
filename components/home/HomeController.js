@@ -19,15 +19,9 @@ app.controller('HomeController',
 
         $scope.onClick = function($event) {
             console.log("click", $event);
-            $event.preventDefault;
-            // if($scope.keyPressed === 16) {
-            //     $event.ctrlKey = true;
-            //     $scope.keyPressed = null;
-            // }
-            if ($event.ctrlKey) {
+            if ($event.shiftKey) {
                 alert("create new node");
             }
-
         }
 
         $scope.onKeyDown = function($event) {

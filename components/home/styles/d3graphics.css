@@ -12,7 +12,7 @@ svg {
     stroke-width: 2px;
 }
 
-.node circle.selected {
+.node.selected circle {
 	fill: #FF6B00 !important;
 }
 

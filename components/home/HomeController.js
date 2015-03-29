@@ -26,6 +26,12 @@ app.controller('HomeController',
         $scope.onKeyDown = function($event) {
             // console.log("key down", $event);
             var key = window.event ? $event.keyCode : $event.which;
+            // Delete: delete any selected nodes
+            if($event.keyCode === 46) {
+                console.log($event.keyCode);
+                $scope.NFA.deleteSelected();    
+            }
+
         };
 
         $scope.onBlur = function() {}

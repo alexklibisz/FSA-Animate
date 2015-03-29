@@ -66,15 +66,23 @@ app.service('FSAModel', function(Map) {
                 node = this.nodes.find(id);
 
             if(node.selected) {
-            	circle.attr("class", "");
+            	svgNode.attr("class", "node");
             	node.selected = false;
             } else {
-            	circle.attr("class", "selected");
+            	svgNode.attr("class", "node selected");
             	node.selected = true;
             }
-
             this.nodes.put(node.id, node);
+        }
 
+        this.deleteSelected = function() {
+    		var nodes = this.nodes.contents;
+    		for(var n in nodes) {
+    			if(nodes[n].selected) {
+    				d3.select("#" + nodes[n].id).remove();
+    				this.nodes.remove(nodes[n].id);
+    			}
+    		}
         }
 
         function dragmove(d) {

@@ -3,37 +3,44 @@ app.service('FSAModel', function(Map) {
     function FSAModel(container, height, width, nodes, links) {
 
         this.container = d3.select(container).append("svg").attr("width", width).attr("height", height);
+        this.height = height;
+        this.width = width;
         this.nodes = new Map();
         this.links = links;
-        this.selectedNodes = [];
-        this.keyCode = -1;
 
-        var behavior = {
-            node: d3.behavior.drag().on("drag", dragMove).on("dragstart", this.dragStart)
-        }
+        this.addInitialNodes(nodes);
 
         this.initialize = function() {}
 
-        this.addNode = function(label, x, y) {
 
+
+        this.setStartNode = function(element) {}
+
+        this.dragStart = function(d) {}
+
+
+
+    }
+
+    FSAModel.prototype = {
+        addNode: function(label, x, y) {
             //validate based on the label
             if (label.length === 0 || label.length > 3 || this.nodes.find(label) !== false) return false;
 
             var node = {
                 id: label,
                 x: x,
-                y: y,
-                selected: false
+                y: y
             };
 
             this.nodes.put(node.id, node);
 
-            //create the container element
+            //create the container element and define drag behavior
             var svgNode = this.container.append("g")
                 .attr("transform", "translate(" + node.x + "," + node.y + ")")
                 .attr("class", "node")
                 .attr("id", label)
-                .call(behavior.node);
+                .call(d3.behavior.drag().on("drag", dragMove));
             //create and append the node to the container element
             var circle = svgNode.append("circle")
                 .attr("r", "20");
@@ -44,13 +51,23 @@ app.service('FSAModel', function(Map) {
                 .attr("dx", -5 * label.length)
                 .attr("dy", 5)
                 .style("cursor", "pointer");
-        }
-
+        },
+        /**
+         * Add a list of node objects passed from the controller
+         */
+        addInitialNodes: function(nodes) {
+            var i, x, y;
+            for (i = 0; i < nodes.length; i++) {
+                x = (this.width / 4) * (i*1.0%4) + 50;
+                y = (this.height / 4) * Math.floor(i / 4) + 50;
+                this.addNode(nodes[i].id, x, y);
+            }
+        },
         /**
          * Generic function for toggling a true/false property
          * for a node, its css class, and in its object.
          */
-        this.toggleNodeProperty = function(node, element, property) {
+        toggleNodeProperty: function(node, element, property) {
             var svgNode = d3.select(node),
                 svgElement = d3.select(node).select(element),
                 id = svgNode.attr("id"),
@@ -63,13 +80,11 @@ app.service('FSAModel', function(Map) {
                 nodeObj[property] = true;
             }
             this.nodes.put(nodeObj.id, nodeObj);
-        }
-
-        this.selectNode = function(node) {
+        },
+        selectNode: function(node) {
             this.toggleNodeProperty(node, "circle", "selected");
-        }
-
-        this.deleteSelected = function() {
+        },
+        deleteSelected: function() {
             var nodes = this.nodes.contents;
             for (var n in nodes) {
                 if (nodes[n].selected) {
@@ -77,9 +92,8 @@ app.service('FSAModel', function(Map) {
                     this.nodes.remove(nodes[n].id);
                 }
             }
-        }
-
-        this.acceptSelected = function() {
+        },
+        acceptSelected: function() {
             var nodes = this.nodes.contents,
                 node;
             for (var n in nodes) {
@@ -89,20 +103,15 @@ app.service('FSAModel', function(Map) {
                 }
             }
         }
+    }
 
-        this.setStartNode = function(element) {}
-
-        this.dragStart = function(d) {}
-
-        function dragMove(d) {
-            // Prevent drag if shift key pressed
-            if (!d3.event.sourceEvent.shiftKey) {
-                var x = d3.event.x;
-                var y = d3.event.y;
-                d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
-            }
+    function dragMove(d) {
+        // Prevent drag if shift key pressed
+        if (!d3.event.sourceEvent.shiftKey) {
+            var x = d3.event.x;
+            var y = d3.event.y;
+            d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
         }
-
     }
 
     return FSAModel;

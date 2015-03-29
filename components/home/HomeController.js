@@ -30,14 +30,8 @@ app.controller('HomeController',
 
         $scope.onBlur = function() {}
 
-        
-
-        function randomColor() {
-            var colors = ['#003399', '#6699FF', '#FFFFFF', '#3366CC', '#FF9966', '#FF9900', '#FFCC00'];
-            var index = Math.floor((Math.random() * colors.length));
-            console.log(colors[index]);
-            return colors[index];
+        $scope.onDblClick = function($event) {
+            var parent = $event.target.parentNode;
+            $scope.NFA.selectNode(parent);
         }
-
-
     });

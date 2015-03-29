@@ -1,41 +1,37 @@
-
 svg {
-	background-color: #FFF;
-	width: 100%;
-	height: 100%;
-	margin: 0px;
+    background-color: #FFF;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
 }
 
 .node {
-	border: 1px dotted black;
-	cursor: pointer;
+    border: 1px dotted black;
+    cursor: pointer;
 }
 
 .node circle {
-	stroke: #000;
-	fill: #FFCC00;
-    stroke-width: 2px;    
+    stroke: #000;
+    fill: #FFCC00;
+    stroke-width: 2px;
 }
 
 .node.selected circle {
-	fill: #FF6B00 !important;
+    fill: #FF6B00 !important;
 }
 
 .node.accept circle {
-	fill: #66FF33 !important;
-}
-
-.node.accept.selected circle {
-	fill: #00CC00 !important;
+    stroke: #3FB618;
+    stroke-width: 4px;
 }
 
 .node-label {
-	font-size: 1.2em;
-	font-weight: bold;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
-#NFA { 
-	padding: 0px;
-	min-height: 100px;
-	position: relative;
+#NFA {
+    padding: 0px;
+    min-height: 100px;
+    position: relative;
 }

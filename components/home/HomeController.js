@@ -6,9 +6,7 @@ app.controller('HomeController',
             $scope.NFA = new FSAModel("#NFA", 310, 610, [], []);
         }
 
-        $scope.initializeDFA = function() {
-            // $scope.DFA = new FSAModel("#DFA", 360, 610, [], []);
-        }
+        $scope.initializeDFA = function() {}
 
         //Event Handlers
         $scope.onClick = function($event) {
@@ -21,7 +19,6 @@ app.controller('HomeController',
         $scope.onKeyDown = function($event) {
             // Delete: delete any selected nodes
             if ($event.keyCode === 46) {
-                console.log($event.keyCode);
                 $scope.NFA.deleteSelected();
             }
 

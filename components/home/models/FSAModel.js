@@ -43,9 +43,6 @@ app.service('FSAModel', function(Map) {
                 .attr("dx", -5 * label.length)
                 .attr("dy", 5)
                 .style("cursor", "pointer");
-
-            console.log(this.nodes.contents);
-
         }
 
         /**
@@ -68,7 +65,6 @@ app.service('FSAModel', function(Map) {
         }
 
         this.selectNode = function(node) {
-            console.log(node);
             this.toggleNodeProperty(node, "circle", "selected");
         }
 

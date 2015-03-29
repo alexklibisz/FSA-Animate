@@ -12,24 +12,17 @@ app.controller('HomeController',
 
         //Event Handlers
         $scope.onClick = function($event) {
-            //console.log("click", $event);
             // Shift+Click: add a node to the NFA
             if ($event.shiftKey) {
-                var label = '';
-                while (label.length === 0 || label.length > 3) {
-                    var label = prompt("New node, please enter label (max 3 characters):", "");
-                }
-                $scope.NFA.addNode(label, $event);
+                $scope.addNode($event);
             }
         }
 
         $scope.onKeyDown = function($event) {
-            // console.log("key down", $event);
-            var key = window.event ? $event.keyCode : $event.which;
             // Delete: delete any selected nodes
-            if($event.keyCode === 46) {
+            if ($event.keyCode === 46) {
                 console.log($event.keyCode);
-                $scope.NFA.deleteSelected();    
+                $scope.NFA.deleteSelected();
             }
 
         };
@@ -39,5 +32,20 @@ app.controller('HomeController',
         $scope.onDblClick = function($event) {
             var parent = $event.target.parentNode;
             $scope.NFA.selectNode(parent);
+        }
+
+        $scope.addNode = function($event) {
+            var label = '',
+                valid = false,
+                x = $event.layerX,
+                y = $event.layerY;
+            if (!$event.shiftKey) {
+                x = 50;
+                y = 50;
+            }
+            while (valid === false) {
+                label = prompt("New node, please enter a unique label (max 3 characters):", "");
+                valid = $scope.NFA.addNode(label, x, y);
+            }
         }
     });

@@ -6,14 +6,27 @@ svg {
 	margin: 0px;
 }
 
+.node {
+	border: 1px dotted black;
+	cursor: pointer;
+}
+
 .node circle {
 	stroke: #000;
 	fill: #FFCC00;
-    stroke-width: 2px;
+    stroke-width: 2px;    
 }
 
 .node.selected circle {
 	fill: #FF6B00 !important;
+}
+
+.node.accept circle {
+	fill: #66FF33 !important;
+}
+
+.node.accept.selected circle {
+	fill: #00CC00 !important;
 }
 
 .node-label {

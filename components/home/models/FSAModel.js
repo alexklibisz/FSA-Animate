@@ -1,6 +1,6 @@
 app.service('FSAModel', function(Map) {
 
-	function FSAModel(container, height, width, nodes, links) {
+    function FSAModel(container, height, width, nodes, links) {
 
         this.container = d3.select(container).append("svg").attr("width", width).attr("height", height);
         this.nodes = new Map();
@@ -11,22 +11,20 @@ app.service('FSAModel', function(Map) {
             node: d3.behavior.drag().on("drag", dragmove)
         }
 
-        this.initialize = function() {
-    
-        }
+        this.initialize = function() {}
 
-        this.addNode = function(label, $event) {
+        this.addNode = function(label, x, y) {
+
+            if (label.length === 0 || label.length > 3 || this.nodes.find(label) !== false) return false;
 
             var node = {
                 id: label,
-                x: $event.layerX,
-                y: $event.layerY,
+                x: x,
+                y: y,
                 selected: false
             };
 
             this.nodes.put(node.id, node);
-
-            console.log(this.nodes.contents);
 
             //create the container element
             var svgNode = this.container.append("g")
@@ -34,13 +32,10 @@ app.service('FSAModel', function(Map) {
                 .attr("class", "node")
                 .attr("id", label)
                 .call(behavior.node);
-            // .on("dblclick", this.selectNode);
             //create and append the node to the container element
             var circle = svgNode.append("circle")
-                //.attr("id", node.id)
                 .attr("transform", "translate(" + 0 + "," + 0 + ")")
-                .attr("r", "20")
-                .style("cursor", "pointer");
+                .attr("r", "20");
             //create and append the label to the container element
             var label = svgNode.append("text")
                 .text(label)
@@ -49,40 +44,49 @@ app.service('FSAModel', function(Map) {
                 .attr("dy", 5)
                 .style("cursor", "pointer");
 
+            console.log(this.nodes.contents);
+
         }
 
-        this.printNodes = function() {
-            console.log(this.nodes);
-        }
-
-        this.printLinks = function() {
-            console.log(this.links);
-        }
-
-        this.selectNode = function(element) {
-            var svgNode = d3.select(element),
-                circle = d3.select(element).select("circle"),
+        /**
+         * Generic function for toggling a true/false property
+         * for a node, its css class, and in its object.
+         */
+        this.toggleNodeProperty = function(node, element, property) {
+            var svgNode = d3.select(node),
+                svgElement = d3.select(node).select(element),
                 id = svgNode.attr("id"),
-                node = this.nodes.find(id);
-
-            if(node.selected) {
-            	svgNode.attr("class", "node");
-            	node.selected = false;
+                nodeObj = this.nodes.find(id);
+            if (nodeObj[property]) {
+                svgNode.classed(property, false);
+                nodeObj[property] = false;
             } else {
-            	svgNode.attr("class", "node selected");
-            	node.selected = true;
+                svgNode.classed(property, true);
+                nodeObj[property] = true;
             }
-            this.nodes.put(node.id, node);
+            this.nodes.put(nodeObj.id, nodeObj);
         }
 
+        this.selectNode = function(node) {
+            this.toggleNodeProperty(node, "circle", "selected");
+        }
+        
         this.deleteSelected = function() {
-    		var nodes = this.nodes.contents;
-    		for(var n in nodes) {
-    			if(nodes[n].selected) {
-    				d3.select("#" + nodes[n].id).remove();
-    				this.nodes.remove(nodes[n].id);
-    			}
-    		}
+            var nodes = this.nodes.contents;
+            for (var n in nodes) {
+                if (nodes[n].selected) {
+                    d3.select("#" + nodes[n].id).remove();
+                    this.nodes.remove(nodes[n].id);
+                }
+            }
+        }
+
+        this.setAcceptNode = function(element) {
+
+        }
+
+        this.setStartNode = function(element) {
+
         }
 
         function dragmove(d) {

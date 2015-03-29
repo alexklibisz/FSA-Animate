@@ -68,9 +68,10 @@ app.service('FSAModel', function(Map) {
         }
 
         this.selectNode = function(node) {
+            console.log(node);
             this.toggleNodeProperty(node, "circle", "selected");
         }
-        
+
         this.deleteSelected = function() {
             var nodes = this.nodes.contents;
             for (var n in nodes) {
@@ -81,8 +82,15 @@ app.service('FSAModel', function(Map) {
             }
         }
 
-        this.setAcceptNode = function(element) {
-
+        this.acceptSelected = function() {
+            var nodes = this.nodes.contents,
+                node;
+            for (var n in nodes) {
+                if (nodes[n].selected) {
+                    node = d3.select("#" + nodes[n].id);
+                    this.toggleNodeProperty(node[0][0], "circle", "accept");
+                }
+            }
         }
 
         this.setStartNode = function(element) {

@@ -3,7 +3,7 @@ app.controller('HomeController',
 
         //Initialize NFA and DFA -- called via ng-init
         $scope.initializeNFA = function() {
-            $scope.NFA = new FSAModel("#NFA", 310, 610, [{id: "A"}, {id: "B"}, {id: "C"}, {id: "D"}, {id: "E"}], []);
+            $scope.NFA = new FSAModel("#NFA", 310, 610, ["A", "B", "C", "D", "E"], []);
         }
 
         $scope.initializeDFA = function() {}

@@ -5,7 +5,7 @@
             <button class="btn btn-default btn-xs" ng-click="addNode($event)">Add State</button> &nbsp;
             <button class="btn btn-default btn-xs" ng-click="NFA.deleteSelected()">Delete Selected States</button> &nbsp;
             <button class="btn btn-default btn-xs">Set Start State</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.acceptSelected()">Toggle Accept State(s)</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="NFA.setAcceptNodes()">Toggle Accept State(s)</button> &nbsp;
         </div>
     </div>
     <div id="NFA" class="panel-body" ng-init="initializeNFA()" ng-click="onClick($event)" ng-keydown="onKeyDown($event)" ng-blur="onBlur()" ng-dblclick="onDblClick($event)" tabindex="0" />

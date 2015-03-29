@@ -2,15 +2,16 @@
     <div class="panel-heading">
         <span class="panel-title">NFA</span>
         <div class="buttons" style="float: right">
-            <button class="btn btn-default btn-xs" ng-click="addNode($event)">Add Node</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.deleteSelected()">Delete Selected</button> &nbsp;
-            <button class="btn btn-default btn-xs">Set Start Node</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.acceptSelected()">Toggle Accept Node(s)</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="addNode($event)">Add State</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="NFA.deleteSelected()">Delete Selected States</button> &nbsp;
+            <button class="btn btn-default btn-xs">Set Start State</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="NFA.acceptSelected()">Toggle Accept State(s)</button> &nbsp;
         </div>
     </div>
     <div id="NFA" class="panel-body" ng-init="initializeNFA()" ng-click="onClick($event)" ng-keydown="onKeyDown($event)" ng-blur="onBlur()" ng-dblclick="onDblClick($event)" tabindex="0" />
 </div>
 </div>
-<p>Shift+Click to create a new node.</p>
-<p>Double click to select/de-select a node.</p>
-<p>Press "Delete" to delete the selected node(s).</p>
+<p>&#9632; Shift+Click to create a new state. 
+&#9632; Double click to select/de-select a state. 
+&#9632; Press "Delete" to delete the selected state(s).
+&#9632; Shift+Drag to connect states.</p>

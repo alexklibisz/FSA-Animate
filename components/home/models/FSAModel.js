@@ -6,15 +6,17 @@ app.service('FSAModel', function(Map) {
         this.nodes = new Map();
         this.links = links;
         this.selectedNodes = [];
+        this.keyCode = -1;
 
         var behavior = {
-            node: d3.behavior.drag().on("drag", dragmove)
+            node: d3.behavior.drag().on("drag", dragMove).on("dragstart", this.dragStart)
         }
 
         this.initialize = function() {}
 
         this.addNode = function(label, x, y) {
 
+            //validate based on the label
             if (label.length === 0 || label.length > 3 || this.nodes.find(label) !== false) return false;
 
             var node = {
@@ -34,7 +36,6 @@ app.service('FSAModel', function(Map) {
                 .call(behavior.node);
             //create and append the node to the container element
             var circle = svgNode.append("circle")
-                .attr("transform", "translate(" + 0 + "," + 0 + ")")
                 .attr("r", "20");
             //create and append the label to the container element
             var label = svgNode.append("text")
@@ -89,14 +90,17 @@ app.service('FSAModel', function(Map) {
             }
         }
 
-        this.setStartNode = function(element) {
+        this.setStartNode = function(element) {}
 
-        }
+        this.dragStart = function(d) {}
 
-        function dragmove(d) {
-            var x = d3.event.x;
-            var y = d3.event.y;
-            d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+        function dragMove(d) {
+            // Prevent drag if shift key pressed
+            if (!d3.event.sourceEvent.shiftKey) {
+                var x = d3.event.x;
+                var y = d3.event.y;
+                d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+            }
         }
 
     }

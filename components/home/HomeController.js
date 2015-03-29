@@ -10,14 +10,16 @@ app.controller('HomeController',
 
         //Event Handlers
         $scope.onClick = function($event) {
-            // Shift+Click: add a node to the NFA
-            if ($event.shiftKey) {
+            // Shift+Click, parent is #NFA div: add a node to the NFA
+            var parent = $event.target.parentNode.id;
+            if ($event.shiftKey && parent === 'NFA') {
                 $scope.addNode($event);
             }
         }
 
         $scope.onKeyDown = function($event) {
             // Delete: delete any selected nodes
+            NFA.keyCode = $event.keyCode;
             if ($event.keyCode === 46) {
                 $scope.NFA.deleteSelected();
             }
@@ -41,7 +43,8 @@ app.controller('HomeController',
                 y = 50;
             }
             while (valid === false) {
-                label = prompt("New node, please enter a unique label (max 3 characters):", "");
+                label = prompt("New state, please enter a unique label (max 3 characters):", "");
+                if(label === null) break;
                 valid = $scope.NFA.addNode(label, x, y);
             }
         }

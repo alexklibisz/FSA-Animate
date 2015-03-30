@@ -1,14 +1,21 @@
 app.controller('HomeController',
-    function($scope, $location, FSAModel) {
+    function($scope, $location, FSAModel, TransitionModel) {
 
         //Initialize NFA and DFA -- called via ng-init
         $scope.initializeNFA = function() {
-            var alphabet = ["a", "b"];
-
-            var sampleNodes = [
-
-            ]
-            $scope.NFA = new FSAModel("#NFA", 310, 610, ["A", "B", "C", "D", "E"], [], []);
+            var alphabet = ['a', 'b'],
+                sampleNodes = ['1', '2', '3'],
+                transitions = [
+                    new TransitionModel('b', '1', '2'),
+                    new TransitionModel('E', '1', '3'),
+                    new TransitionModel('a', '2', '3'),
+                    new TransitionModel('b', '2', '3'),
+                    new TransitionModel('a', '2', '2'),
+                    new TransitionModel('a', '3', '1')
+                ],
+                startState = '1',
+                acceptStates = ['1'];
+            $scope.NFA = new FSAModel("#NFA", 310, 610, sampleNodes, transitions, alphabet);
         }
 
         $scope.initializeDFA = function() {}
@@ -49,8 +56,9 @@ app.controller('HomeController',
             }
             while (valid === false) {
                 label = prompt("New state, please enter a unique label (max 3 characters):", "");
-                if(label === null) break;
+                if (label === null) break;
                 valid = $scope.NFA.addState(label, x, y);
             }
         }
+
     });

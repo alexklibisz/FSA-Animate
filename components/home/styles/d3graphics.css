@@ -5,6 +5,12 @@ svg {
     margin: 0px;
 }
 
+#NFA {
+    padding: 0px;
+    min-height: 100px;
+    position: relative;
+}
+
 .state {
     border: 1px dotted black;
     cursor: pointer;
@@ -30,8 +36,9 @@ svg {
     font-weight: bold;
 }
 
-#NFA {
-    padding: 0px;
-    min-height: 100px;
-    position: relative;
+.transition {
+	fill: none;
+	stroke: black;
+	stroke-width: 2px;
 }
+

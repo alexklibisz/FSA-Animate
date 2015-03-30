@@ -32,6 +32,10 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
             this.appendState(this.states.contents[s]);
         }
 
+        console.log("States ", this.states.contents);
+        console.log("Transitions ", this.transitions.contents);
+
+
     }
 
     FSAModel.prototype = {
@@ -74,9 +78,14 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         /**
          * create a new transition object from the symbol, source, and target
          */
-        addTransition: function(symbol, source, target) {
-            var transition = new TransitionModel(symbol, source, target);
+        addTransition: function(symbol, sourceId, targetId) {
+            var transition = new TransitionModel(symbol, sourceId, targetId),
+                sourceState = this.states.find(sourceId),
+                targetState = this.states.find(targetId);                
+            
             this.transitions.put(transition.id, transition);
+            sourceState.transitions.put(transition.id, transition);
+            targetState.transitions.put(transition.id, transition);
         },
         /**
          * transition: a transition object
@@ -91,7 +100,6 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 svgPath = this.container.append("path")
                 .attr("d", d)
                 .classed("transition", true);
-            this.transitions.put(transition.id, transition);
         },
         selectState: function(state) {
             this.toggleStateProperty(state, "circle", "selected");
@@ -122,9 +130,9 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
          * Generic function for toggling a true/false property
          * for a state, its css class, and in its object.
          */
-        toggleStateProperty: function(state, element, property) {
-            var svgState = d3.select(state),
-                svgElement = d3.select(state).select(element),
+        toggleStateProperty: function(stateElement, innerElement, property) {
+            var svgState = d3.select(stateElement),
+                svgElement = d3.select(stateElement).select(innerElement),
                 id = svgState.attr("id"),
                 stateObj = this.states.find(id);
             if (stateObj[property]) {
@@ -151,6 +159,11 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         }
     }
 
+    /**
+     * Creates and returns the "M" property
+     * for a Bezier-curve clockwise arc from
+     * source to target
+     */
     function arcPath(source, target) {
         var dx = target.x - source.x,
             dy = target.y - source.y,

@@ -1,6 +1,10 @@
 app.service('Map', function() {
 
     function Map() {
+        /**
+         * Declared in the constructor to prevent 
+         * singleton behavior.
+         */
         this.contents = {};
     }
 
@@ -8,6 +12,9 @@ app.service('Map', function() {
         put: function(key, value) {
             this.contents[key] = value;
         },
+        /**
+         * Returns a copy of the the object at this.contents[key]
+         */
         find: function(key) {
             if (this.contents.hasOwnProperty(key)) {
                 return this.contents[key];

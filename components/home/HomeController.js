@@ -51,8 +51,8 @@ app.controller('HomeController',
                 x = $event.layerX,
                 y = $event.layerY;
             if (!$event.shiftKey) {
-                x = 50;
-                y = 50;
+                x = $scope.NFA.width / 2;
+                y = $scope.NFA.height / 2;
             }
             while (state === false) {
                 label = prompt("New state, please enter a unique label (max 3 characters):", "");

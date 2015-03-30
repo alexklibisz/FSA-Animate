@@ -5,7 +5,16 @@ app.service('StateModel', function(Map) {
         this.x = x;
         this.y = y;
         this.selected = false;
-        this.transitions = new Map();   //holds all of the transition objects for this State, keyed on id.
+        /**
+         * Tll transitions from and to this object
+         * are stored as objects in separate maps.
+         * Dragging a node state will update the 
+         * source property of all transitions *from*
+         * this state and the target property of all 
+         * transitions *to* this state. 
+         */
+        this.transitionsFrom = new Map();  
+        this.transitionsTo = new Map(); 
     }
     return StateModel;
 });

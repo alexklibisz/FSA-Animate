@@ -5,27 +5,27 @@ svg {
     margin: 0px;
 }
 
-.node {
+.state {
     border: 1px dotted black;
     cursor: pointer;
 }
 
-.node circle {
+.state circle {
     stroke: #000;
     fill: #FFCC00;
     stroke-width: 2px;
 }
 
-.node.selected circle {
+.state.selected circle {
     fill: #FF6B00 !important;
 }
 
-.node.accept circle {
+.state.accept circle {
     stroke: #379f15;
     stroke-width: 4px;
 }
 
-.node-label {
+.state-label {
     font-size: 1.2em;
     font-weight: bold;
 }

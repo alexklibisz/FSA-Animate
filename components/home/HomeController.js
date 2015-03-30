@@ -3,22 +3,27 @@ app.controller('HomeController',
 
         //Initialize NFA and DFA -- called via ng-init
         $scope.initializeNFA = function() {
-            $scope.NFA = new FSAModel("#NFA", 310, 610, ["A", "B", "C", "D", "E"], []);
+            var alphabet = ["a", "b"];
+
+            var sampleNodes = [
+
+            ]
+            $scope.NFA = new FSAModel("#NFA", 310, 610, ["A", "B", "C", "D", "E"], [], []);
         }
 
         $scope.initializeDFA = function() {}
 
         //Event Handlers
         $scope.onClick = function($event) {
-            // Shift+Click, parent is #NFA div: add a node to the NFA
+            // Shift+Click, parent is #NFA div: add a state to the NFA
             var parent = $event.target.parentNode.id;
             if ($event.shiftKey && parent === 'NFA') {
-                $scope.addNode($event);
+                $scope.addState($event);
             }
         }
 
         $scope.onKeyDown = function($event) {
-            // Delete: delete any selected nodes
+            // Delete: delete any selected states
             NFA.keyCode = $event.keyCode;
             if ($event.keyCode === 46) {
                 $scope.NFA.deleteSelected();
@@ -30,10 +35,10 @@ app.controller('HomeController',
 
         $scope.onDblClick = function($event) {
             var parent = $event.target.parentNode;
-            $scope.NFA.selectNode(parent);
+            $scope.NFA.selectState(parent);
         }
 
-        $scope.addNode = function($event) {
+        $scope.addState = function($event) {
             var label = '',
                 valid = false,
                 x = $event.layerX,
@@ -45,7 +50,7 @@ app.controller('HomeController',
             while (valid === false) {
                 label = prompt("New state, please enter a unique label (max 3 characters):", "");
                 if(label === null) break;
-                valid = $scope.NFA.addNode(label, x, y);
+                valid = $scope.NFA.addState(label, x, y);
             }
         }
     });

@@ -47,18 +47,19 @@ app.controller('HomeController',
 
         $scope.addState = function($event) {
             var label = '',
-                valid = false,
+                state = false,
                 x = $event.layerX,
                 y = $event.layerY;
             if (!$event.shiftKey) {
                 x = 50;
                 y = 50;
             }
-            while (valid === false) {
+            while (state === false) {
                 label = prompt("New state, please enter a unique label (max 3 characters):", "");
                 if (label === null) break;
-                valid = $scope.NFA.addState(label, x, y);
+                state = $scope.NFA.addState(label, x, y);
             }
+            $scope.NFA.appendState(state);
         }
 
     });

@@ -10,18 +10,27 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         this.startState = startState;
         this.acceptStates = acceptStates;
 
-        //Add the initial states
+        //Create the initial state objects
         for (var i = 0; i < states.length; i++) {
-            this.addState(states[i], 0, 0);
+            var x = (this.width / 4) * (i * 1.0 % 4) + 50;
+            var y = (this.height / 4) * Math.floor(i / 4) + 50;
+            this.addState(states[i], x, y);
         }
 
-        //Add the initial transitions
+        //Create the initial transition objects
         for (var i = 0; i < transitions.length; i++) {
             this.addTransition(transitions[i].symbol, transitions[i].source, transitions[i].target);
         }
 
-        this.addInitialTransitions();
-        this.appendInitialStates();
+        //Append the initial transitions
+        for(var t in this.transitions.contents) {
+            this.appendTransition(this.transitions.contents[t]);
+        }
+
+        //Append the initial states
+        for(var s in this.states.contents) {
+            this.appendState(this.states.contents[s]);
+        }
 
     }
 
@@ -63,22 +72,6 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 .style("cursor", "pointer");
         },
         /**
-         * states: list of character labels;
-         * iterate over the list;
-         * calculate x and y coordinates fo.htmlIdr a 4 * n/4 grid;
-         * call addState() to add the states
-         */
-        appendInitialStates: function() {
-            var i = 0,
-                states = this.states.contents;
-            for (var s in states) {
-                states[s].x = (this.width / 4) * (i * 1.0 % 4) + 50;
-                states[s].y = (this.height / 4) * Math.floor(i / 4) + 50;
-                i++;
-                this.appendState(states[s]);
-            }
-        },
-        /**
          * create a new transition object from the symbol, source, and target
          */
         addTransition: function(symbol, source, target) {
@@ -92,22 +85,13 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
          * their coordinates.
          */
         appendTransition: function(transition) {
-            console.log(transition);
             var source = this.states.find(transition.source),
-                target = this.states.find(transition.target),
-
+                target = this.states.find(transition.target);
                 d = arcPath(source, target);
-                console.log(d);
-            //     svgPath = this.container.append("path")
-            //     .attr("d", d)
-            //     .classed("transition", true);
-            // this.transitions.put(transition.id, transition);
-        },
-        addInitialTransitions: function() {
-            var i = 0, transitions = this.transitions.contents;
-            for(var t in transitions) {
-                this.appendTransition(transitions[t]);
-            }
+                svgPath = this.container.append("path")
+                .attr("d", d)
+                .classed("transition", true);
+            this.transitions.put(transition.id, transition);
         },
         selectState: function(state) {
             this.toggleStateProperty(state, "circle", "selected");
@@ -168,12 +152,9 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
     }
 
     function arcPath(source, target) {
-        console.log("source", source, source.x, source.y);
-        console.log("target", target, target.x, target.y);
         var dx = target.x - source.x,
             dy = target.y - source.y,
             dr = Math.sqrt(dx * dx + dy * dy);
-        console.log(dx, dy);
         return `M${source.x},${source.y}A${dr},${dr} 0 0,1 ${target.x},${target.y}`;
     }
 

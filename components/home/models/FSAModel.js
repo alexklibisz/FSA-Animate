@@ -21,7 +21,8 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
             this.addTransition(transitions[i].source, transitions[i].target, transitions[i].symbols);
         }
 
-        console.log("this.transitions", this.transitions.contents);
+        //Append the svg defs
+        this.appendDefs();
 
         //Append the initial transitions
         for (var t in this.transitions.contents) {
@@ -97,13 +98,27 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 .attr("target", transition.target)
                 .classed("transition", true),
                 path = transitionGroup.append("path")
-                .attr("d", d);
-                // bBox = path.node().getBBox(),
-                // labelX = bBox.x + (bBox.width / 2.0),
-                // labelY = bBox.y,
-                // label = transitionGroup.append("text")
-                // .text(transition.symbol)
-                // .attr("transform", "translate(" + labelX + "," + labelY + ")");
+                .attr("d", d)
+                .attr("marker-end", "url(#arrow-end)");
+            // bBox = path.node().getBBox(),
+            // labelX = bBox.x + (bBox.width / 2.0),
+            // labelY = bBox.y,
+            // label = transitionGroup.append("text")
+            // .text(transition.symbol)
+            // .attr("transform", "translate(" + labelX + "," + labelY + ")");
+        },
+        appendDefs: function() {
+            var defs = this.container.append('defs'),
+                marker = defs.append('marker')
+                .attr('id', 'arrow-end')
+                .attr('viewBox', '0 0 10 10')
+                .attr('refX', '30')
+                .attr('refY', '3')
+                .attr('markerWidth', '5')
+                .attr('markerHeight', '5')
+                .attr('orient', 'auto'),
+                path = marker.append('path')
+                .attr('d', 'M 0 0 L 10 5 L 0 10 z');
         },
         selectState: function(state) {
             this.toggleStateProperty(state, "circle", "selected");
@@ -177,16 +192,16 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 labelObj = d3.select(labelElement[0][0]),
                 dArray = pathObj.attr('d').split(' '),
                 target = dArray[2].split(','),
-                d = transitionPath(x, y, target[0], target[1]),
-                bBox = pathElement[0][0].getBBox(),
-                labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y;
-            if (Math.abs(bBox.y - Math.max(y, target[1])) <
-                Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
-                labelY += bBox.height;
-            }
+                d = transitionPath(x, y, target[0], target[1]);
+            //     bBox = pathElement[0][0].getBBox(),
+            //     labelX = bBox.x + (bBox.width / 2.0),
+            //     labelY = bBox.y;
+            // if (Math.abs(bBox.y - Math.max(y, target[1])) <
+            //     Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
+            //     labelY += bBox.height;
+            // }
             pathObj.attr('d', d);
-            labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
+            // labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
         }
 
         for (var i = 0; i < targetTransitions[0].length; i++) {
@@ -197,15 +212,15 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 dArray = pathObj.attr('d').split(' '),
                 source = dArray[0].split(','),
                 d = transitionPath(source[0].replace('M', ''), source[1], x, y);
-            bBox = pathElement[0][0].getBBox(),
-                labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y;
-            if (Math.abs(bBox.y - Math.max(y, target[1])) <
-                Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
-                labelY += bBox.height;
-            }
+            // bBox = pathElement[0][0].getBBox(),
+            //     labelX = bBox.x + (bBox.width / 2.0),
+            //     labelY = bBox.y;
+            // if (Math.abs(bBox.y - Math.max(y, target[1])) <
+            //     Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
+            //     labelY += bBox.height;
+            // }
             pathObj.attr('d', d);
-            labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
+            // labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
         }
 
 
@@ -222,6 +237,12 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
             dy = ty - sy,
             rx = Math.sqrt(dx * dx + dy * dy),
             ry = rx;
+        if (dx === 0 && dy === 0) {
+            sx -= 2;
+            tx -= 2;
+            rx = 150;
+            ry = 150;
+        }
         return `M${sx},${sy} A${rx},${ry},0,0,1, ${tx},${ty}`;
     }
 

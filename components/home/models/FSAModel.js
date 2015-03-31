@@ -75,7 +75,7 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         addTransition: function(sourceId, targetId, symbols) {
             var key = [sourceId, targetId].join(','),
                 transition = this.transitions.find(key);
-            if(transition === false) {
+            if (transition === false) {
                 transition = new TransitionModel(sourceId, targetId, symbols);
             } else {
                 transition.symbols = transition.symbols.concat(symbols);
@@ -93,21 +93,17 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 target = this.states.find(transition.target),
                 d = transitionPath(source.x, source.y, target.x, target.y),
                 transitionGroup = this.container.append("g")
-                    .attr("source", transition.source)
-                    .attr("target", transition.target)
-                    .classed("transition", true),
+                .attr("source", transition.source)
+                .attr("target", transition.target)
+                .classed("transition", true),
                 path = transitionGroup.append("path")
-                    .attr("d", d),
-                bBox = path.node().getBBox(),
-                labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.max(source.y, target.y)) < 
-                    Math.abs((bBox.y+bBox.height) - Math.max(source.y, target.y))) {  //downward curve
-                    labelY += bBox.height;
-                }
-                var label = transitionGroup.append("text")
-                    .text(transition.symbol)
-                    .attr("transform", "translate(" + labelX + "," + labelY + ")");
+                .attr("d", d);
+                // bBox = path.node().getBBox(),
+                // labelX = bBox.x + (bBox.width / 2.0),
+                // labelY = bBox.y,
+                // label = transitionGroup.append("text")
+                // .text(transition.symbol)
+                // .attr("transform", "translate(" + labelX + "," + labelY + ")");
         },
         selectState: function(state) {
             this.toggleStateProperty(state, "circle", "selected");
@@ -164,17 +160,17 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
      * State is not dragged if the shift key is pressed.
      */
     function dragState() {
-        if (d3.event.sourceEvent.shiftKey) return;  //prevent drag if shift key is pressed
+        if (d3.event.sourceEvent.shiftKey) return; //prevent drag if shift key is pressed
         var x = d3.event.x,
             y = d3.event.y,
             svgState = d3.select(this),
             id = svgState.attr("id"),
-            sourceTransitions = d3.selectAll(`[source=${id}]`),  //paths with this state as source
-            targetTransitions = d3.selectAll(`[target=${id}]`);  //paths with this state as target
-        
+            sourceTransitions = d3.selectAll(`[source=${id}]`), //paths with this state as source
+            targetTransitions = d3.selectAll(`[target=${id}]`); //paths with this state as target
+
         svgState.attr("transform", "translate(" + x + "," + y + ")");
 
-         for(var i = 0; i < sourceTransitions[0].length; i++) {
+        for (var i = 0; i < sourceTransitions[0].length; i++) {
             var pathElement = d3.select(sourceTransitions[0][i]).select("path"),
                 pathObj = d3.select(pathElement[0][0]),
                 labelElement = d3.select(sourceTransitions[0][i]).select("text"),
@@ -185,15 +181,15 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
                 labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.max(y, target[1])) < 
-                    Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
-                    labelY += bBox.height;
-                }
+            if (Math.abs(bBox.y - Math.max(y, target[1])) <
+                Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
+                labelY += bBox.height;
+            }
             pathObj.attr('d', d);
             labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
-         }
+        }
 
-         for(var i = 0; i < targetTransitions[0].length; i++) {
+        for (var i = 0; i < targetTransitions[0].length; i++) {
             var pathElement = d3.select(targetTransitions[0][i]).select("path"),
                 pathObj = d3.select(pathElement[0][0]),
                 labelElement = d3.select(targetTransitions[0][i]).select("text"),
@@ -201,18 +197,18 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 dArray = pathObj.attr('d').split(' '),
                 source = dArray[0].split(','),
                 d = transitionPath(source[0].replace('M', ''), source[1], x, y);
-                bBox = pathElement[0][0].getBBox(),
+            bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
                 labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.max(y, target[1])) < 
-                    Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
-                    labelY += bBox.height;
-                }
+            if (Math.abs(bBox.y - Math.max(y, target[1])) <
+                Math.abs((bBox.y + bBox.height) - Math.max(y, target[1]))) { //downward curve
+                labelY += bBox.height;
+            }
             pathObj.attr('d', d);
             labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
-         }
+        }
 
-        
+
     }
 
     /**

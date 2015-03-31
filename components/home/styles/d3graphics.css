@@ -37,7 +37,11 @@ svg {
     cursor: pointer;
 }
 
-.transition {
+.transition text {
+    font-weight: lighter;
+}
+
+.transition path {
 	fill: none;
 	stroke: black;
 	stroke-width: 2px;

@@ -16,26 +16,19 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
             var y = (this.height / 4) * Math.floor(i / 4) + 50;
             this.addState(states[i], x, y);
         }
-
         //Create the initial transition objects
         for (var i = 0; i < transitions.length; i++) {
             this.addTransition(transitions[i].symbol, transitions[i].source, transitions[i].target);
         }
-
         //Append the initial transitions
         for (var t in this.transitions.contents) {
             this.appendTransition(this.transitions.contents[t]);
+            console.log("transition");
         }
-
         //Append the initial states
         for (var s in this.states.contents) {
             this.appendState(this.states.contents[s]);
         }
-
-        console.log("States ", this.states.contents);
-        console.log("Transitions ", this.transitions.contents);
-
-
     }
 
     FSAModel.prototype = {
@@ -82,8 +75,8 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 sourceState = this.states.find(sourceId),
                 targetState = this.states.find(targetId);
             this.transitions.put(transition.id, transition);
-            sourceState.transitionsFrom.put(transition.id, transition);
-            targetState.transitionsTo.put(transition.id, transition);
+            //if(sourceState !== false) sourceState.transitionsFrom.put(transition.id, transition);
+            //if(targetState !== false) targetState.transitionsTo.put(transition.id, transition);
         },
         /**
          * transition: a transition object
@@ -93,18 +86,24 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
          */
         appendTransition: function(transition) {
             var source = this.states.find(transition.source),
-                target = this.states.find(transition.target);
-            d = transitionPath(source.x, source.y, target.x, target.y);
-            svgPath = this.container.append("path")
-                .attr("d", d)
-                .attr("source", transition.source)
-                .attr("target", transition.target)
-                .classed("transition", true);
+                target = this.states.find(transition.target),
+                d = transitionPath(source.x, source.y, target.x, target.y),
+                transitionGroup = this.container.append("g")
+                    .attr("source", transition.source)
+                    .attr("target", transition.target)
+                    .classed("transition", true),
+                path = transitionGroup.append("path")
+                    .attr("d", d),
+                bBox = path.node().getBBox(),
+                labelX = bBox.x + (bBox.width / 2.0),
+                labelY = bBox.y + (bBox.height),
+                label = transitionGroup.append("text")
+                    .text(transition.symbol)
+                    .attr("transform", "translate(" + labelX + "," + labelY + ")");
         },
         selectState: function(state) {
             this.toggleStateProperty(state, "circle", "selected");
         },
-        //need to fix
         deleteSelected: function() {
             var states = this.states.contents;
             for (var n in states) {
@@ -114,7 +113,12 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 }
             }
         },
-        //need to fix
+        // deleteState: function(state) {
+
+        // },
+        // deleteTransition: function(transition) {
+
+        // },
         setAcceptStates: function() {
             var states = this.states.contents,
                 state;
@@ -147,47 +151,52 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
     }
 
     /**
-     * Node dragging behavior.
-     * Node is not dragged if the shift key is pressed.
+     * State dragging behavior.
+     * Also redraws the arcs connected.
+     * State is not dragged if the shift key is pressed.
      */
     function dragState() {
-        // Prevent drag if shift key is pressed
-        if (d3.event.sourceEvent.shiftKey) return;
+        if (d3.event.sourceEvent.shiftKey) return;  //prevent drag if shift key is pressed
         var x = d3.event.x,
             y = d3.event.y,
             svgState = d3.select(this),
             id = svgState.attr("id"),
-            //Select all of the paths where source is this state's id
-            sourceTransitions = d3.selectAll(`[source=${id}]`),
-            //and all of the paths where target is this state's id
-            targetTransitions = d3.selectAll(`[target=${id}]`);
+            sourceTransitions = d3.selectAll(`[source=${id}]`),  //paths with this state as source
+            targetTransitions = d3.selectAll(`[target=${id}]`);  //paths with this state as target
+        
+        svgState.attr("transform", "translate(" + x + "," + y + ")");
 
-        /**
-         * Updating coordinates to "move" the transitions:
-         * For every source and target transition:
-         * - select the svg path element used for this transtion;
-         * - extract the pair of coordinates not being updated
-         * and pass it to the transitionPath function to create
-         * a new path attribute, d.
-         * - set the path attribute d.
-         */
-        for (var i = 0; i < sourceTransitions[0].length; i++) {
-            var svgPath = d3.select(sourceTransitions[0][i]),
-                dArray = svgPath.attr('d').split(' '),
+         for(var i = 0; i < sourceTransitions[0].length; i++) {
+            var pathElement = d3.select(sourceTransitions[0][i]).select("path"),
+                pathObj = d3.select(pathElement[0][0]),
+                labelElement = d3.select(sourceTransitions[0][i]).select("text"),
+                labelObj = d3.select(labelElement[0][0]),
+                dArray = pathObj.attr('d').split(' '),
                 target = dArray[2].split(','),
-                d = transitionPath(x, y, target[0], target[1]);
-            svgPath.attr('d', d);
-        }
+                d = transitionPath(x, y, target[0], target[1]),
+                bBox = pathElement[0][0].getBBox(),
+                labelX = bBox.x + (bBox.width / 2.0),
+                labelY = bBox.y + (bBox.height);
+            pathObj.attr('d', d);
+            labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
+         }
 
-        for (var i = 0; i < targetTransitions[0].length; i++) {
-            var svgPath = d3.select(targetTransitions[0][i]),
-                dArray = svgPath.attr('d').split(' '),
+         for(var i = 0; i < targetTransitions[0].length; i++) {
+            var pathElement = d3.select(targetTransitions[0][i]).select("path"),
+                pathObj = d3.select(pathElement[0][0]),
+                labelElement = d3.select(targetTransitions[0][i]).select("text"),
+                labelObj = d3.select(labelElement[0][0]),
+                dArray = pathObj.attr('d').split(' '),
                 source = dArray[0].split(','),
                 d = transitionPath(source[0].replace('M', ''), source[1], x, y);
-            svgPath.attr('d', d);
-        }
+                bBox = pathElement[0][0].getBBox(),
+                labelX = bBox.x + (bBox.width / 2.0),
+                labelY = bBox.y + (bBox.height);
+            pathObj.attr('d', d);
+            labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
+         }
 
-        svgState.attr("transform", "translate(" + x + "," + y + ")");
+        
     }
 
     /**

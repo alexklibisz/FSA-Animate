@@ -166,33 +166,29 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
          * Updating coordinates to "move" the transitions:
          * For every source and target transition:
          * - select the svg path element used for this transtion;
-         * - select its "d" attribute and turn it into an array
-         * by splitting at the spaces;
-         * - modify the 0th (source or 2nd (target) element with 
-         * the new x and y coordinates;
-         * - join the array into a new string and set this as the 
-         * new "d" attribute.
+         * - extract the pair of coordinates not being updated
+         * and pass it to the transitionPath function to create
+         * a new path attribute, d.
+         * - set the path attribute d.
          */
         for (var i = 0; i < sourceTransitions[0].length; i++) {
             var svgPath = d3.select(sourceTransitions[0][i]),
-                dArray = svgPath.attr("d").split(' ');
-            dArray[0] = `M${x},${y}`;
-            var d = dArray.join(' ');
+                dArray = svgPath.attr('d').split(' '),
+                target = dArray[2].split(','),
+                d = transitionPath(x, y, target[0], target[1]);
             svgPath.attr('d', d);
         }
 
         for (var i = 0; i < targetTransitions[0].length; i++) {
             var svgPath = d3.select(targetTransitions[0][i]),
-                dArray = svgPath.attr("d").split(' ');
-            dArray[2] = `${x},${y}`;
-            var d = dArray.join(' ');
+                dArray = svgPath.attr('d').split(' '),
+                source = dArray[0].split(','),
+                d = transitionPath(source[0].replace('M', ''), source[1], x, y);
             svgPath.attr('d', d);
         }
 
         svgState.attr("transform", "translate(" + x + "," + y + ")");
     }
-
-
 
     /**
      * Creates and returns the "M" property
@@ -203,8 +199,9 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
     function transitionPath(sx, sy, tx, ty) {
         var dx = tx - sx,
             dy = ty - sy,
-            dr = Math.sqrt(dx * dx + dy * dy);
-        return `M${sx},${sy} A${dr},${dr},0,0,1, ${tx},${ty}`;
+            rx = Math.sqrt(dx * dx + dy * dy),
+            ry = rx;
+        return `M${sx},${sy} A${rx},${ry},0,0,1, ${tx},${ty}`;
     }
 
     return FSAModel;

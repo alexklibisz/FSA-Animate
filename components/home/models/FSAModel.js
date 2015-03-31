@@ -96,8 +96,12 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                     .attr("d", d),
                 bBox = path.node().getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y + (bBox.height),
-                label = transitionGroup.append("text")
+                labelY = bBox.y;
+                if(Math.abs(bBox.y - Math.min(source.y, target.y)) < 
+                    Math.abs((bBox.y+bBox.height) - Math.max(source.y, target.y))) {  //downward curve
+                    labelY += bBox.height;
+                }
+                var label = transitionGroup.append("text")
                     .text(transition.symbol)
                     .attr("transform", "translate(" + labelX + "," + labelY + ")");
         },
@@ -176,7 +180,11 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 d = transitionPath(x, y, target[0], target[1]),
                 bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y + (bBox.height);
+                labelY = bBox.y;
+                if(Math.abs(bBox.y - Math.min(y, target[1])) < 
+                    Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
+                    labelY += bBox.height;
+                }
             pathObj.attr('d', d);
             labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
          }
@@ -191,7 +199,11 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 d = transitionPath(source[0].replace('M', ''), source[1], x, y);
                 bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
-                labelY = bBox.y + (bBox.height);
+                labelY = bBox.y;
+                if(Math.abs(bBox.y - Math.min(y, target[1])) < 
+                    Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
+                    labelY += bBox.height;
+                }
             pathObj.attr('d', d);
             labelObj.attr("transform", "translate(" + labelX + "," + labelY + ")");
          }

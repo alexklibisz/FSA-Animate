@@ -112,10 +112,10 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 marker = defs.append('marker')
                 .attr('id', 'arrow-end')
                 .attr('viewBox', '0 0 10 10')
-                .attr('refX', '30')
+                .attr('refX', '25')
                 .attr('refY', '3')
-                .attr('markerWidth', '5')
-                .attr('markerHeight', '5')
+                .attr('markerWidth', '10')
+                .attr('markerHeight', '6')
                 .attr('orient', 'auto'),
                 path = marker.append('path')
                 .attr('d', 'M 0 0 L 10 5 L 0 10 z');
@@ -236,14 +236,17 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         var dx = tx - sx,
             dy = ty - sy,
             rx = Math.sqrt(dx * dx + dy * dy),
-            ry = rx;
+            ry = rx,
+            z = '';
         if (dx === 0 && dy === 0) {
-            sx -= 2;
-            tx -= 2;
-            rx = 150;
-            ry = 150;
+            sx -= 20;
+            tx += 20;
+            rx = 20;
+            ry = 35;
         }
-        return `M${sx},${sy} A${rx},${ry},0,0,1, ${tx},${ty}`;
+        
+        return `M${sx},${sy} A${rx},${ry},0,0,1, ${tx},${ty} ${z}`;
+        //return `M${sx},${sy} A${rx},${ry},0,0,1, ${tx},${ty}`;
     }
 
     return FSAModel;

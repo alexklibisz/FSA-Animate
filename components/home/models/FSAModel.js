@@ -18,12 +18,14 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         }
         //Create the initial transition objects
         for (var i = 0; i < transitions.length; i++) {
-            this.addTransition(transitions[i].symbol, transitions[i].source, transitions[i].target);
+            this.addTransition(transitions[i].source, transitions[i].target, transitions[i].symbols);
         }
+
+        console.log("this.transitions", this.transitions.contents);
+
         //Append the initial transitions
         for (var t in this.transitions.contents) {
             this.appendTransition(this.transitions.contents[t]);
-            console.log("transition");
         }
         //Append the initial states
         for (var s in this.states.contents) {
@@ -70,13 +72,15 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
         /**
          * create a new transition object from the symbol, source, and target
          */
-        addTransition: function(symbol, sourceId, targetId) {
-            var transition = new TransitionModel(symbol, sourceId, targetId),
-                sourceState = this.states.find(sourceId),
-                targetState = this.states.find(targetId);
-            this.transitions.put(transition.id, transition);
-            //if(sourceState !== false) sourceState.transitionsFrom.put(transition.id, transition);
-            //if(targetState !== false) targetState.transitionsTo.put(transition.id, transition);
+        addTransition: function(sourceId, targetId, symbols) {
+            var key = [sourceId, targetId].join(','),
+                transition = this.transitions.find(key);
+            if(transition === false) {
+                transition = new TransitionModel(sourceId, targetId, symbols);
+            } else {
+                transition.symbols = transition.symbols.concat(symbols);
+            }
+            this.transitions.put(key, transition);
         },
         /**
          * transition: a transition object
@@ -97,7 +101,7 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 bBox = path.node().getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
                 labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.min(source.y, target.y)) < 
+                if(Math.abs(bBox.y - Math.max(source.y, target.y)) < 
                     Math.abs((bBox.y+bBox.height) - Math.max(source.y, target.y))) {  //downward curve
                     labelY += bBox.height;
                 }
@@ -181,7 +185,7 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
                 labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.min(y, target[1])) < 
+                if(Math.abs(bBox.y - Math.max(y, target[1])) < 
                     Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
                     labelY += bBox.height;
                 }
@@ -200,7 +204,7 @@ app.service('FSAModel', function(Map, StateModel, TransitionModel) {
                 bBox = pathElement[0][0].getBBox(),
                 labelX = bBox.x + (bBox.width / 2.0),
                 labelY = bBox.y;
-                if(Math.abs(bBox.y - Math.min(y, target[1])) < 
+                if(Math.abs(bBox.y - Math.max(y, target[1])) < 
                     Math.abs((bBox.y+bBox.height) - Math.max(y, target[1]))) {  //downward curve
                     labelY += bBox.height;
                 }

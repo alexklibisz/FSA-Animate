@@ -1,7 +1,9 @@
 app.service('StateModel', function(Map) {
     function StateModel(label, x, y) {
         this.label = label;
-        this.id = `N${label}`;    //has to be prefixed by an N to guarantee HTML validity.
+        //id has to be prefixed by an N to guarantee HTML validity.
+        if(label[0] === 'N') this.id = label;
+        else this.id = `N${label}`;
         this.x = x;
         this.y = y;
         this.selected = false;

@@ -6,12 +6,12 @@ app.controller('HomeController',
             var alphabet = ['a', 'b'],
                 sampleNodes = ['1', '2', '3'],
                 transitions = [
-                    new TransitionModel('b', '1', '2'),
-                    new TransitionModel('E', '1', '3'),
-                    new TransitionModel('a', '2', '3'),
-                    new TransitionModel('b', '2', '3'),
-                    new TransitionModel('a', '2', '2'),
-                    new TransitionModel('a', '3', '1')
+                    new TransitionModel('1', '2', 'b'),
+                    new TransitionModel('1', '3', 'E'),
+                    new TransitionModel('2', '3', 'a'),
+                    new TransitionModel('2', '3', 'b'),
+                    new TransitionModel('2', '2', 'a'),
+                    new TransitionModel('3', '1', 'a')
                 ],
                 startState = '1',
                 acceptStates = ['1'];

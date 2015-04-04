@@ -1,6 +1,7 @@
 .node {
-    stroke: #fff;
-    stroke-width: 1.5px;
+    stroke: #000;
+    fill: #FFCC00;
+    stroke-width: 2px;
 }
 
 .node text {

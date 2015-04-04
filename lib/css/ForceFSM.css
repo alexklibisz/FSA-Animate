@@ -1,28 +1,29 @@
-.node {
+.state circle {
     stroke: #000;
     fill: #FFCC00;
     stroke-width: 2px;
 }
 
-.node text {
-  
+.node text {}
+
+.transition-path {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
 }
 
-.link {
-    fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
+.transition-texts text {
+	text-anchor: middle;
 }
 
 svg {
-	border: 1px solid blue;
+    border: 1px solid blue;
 }
 
 text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 24px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 24px;
 }
-
 /*.link {
   fill: none;
   stroke: #666;

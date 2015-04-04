@@ -3,7 +3,7 @@ app.controller('HomeController',
 
         //Initialize NFA and DFA -- called via ng-init
         $scope.initializeNFA = function() {
-            $scope.NFA = new ForceFSM("#NFA", 310, 630, ['a', 'b'], [], []);
+            $scope.NFA = new ForceFSM("#NFA", 310, 600, ['a', 'b'], [], []);
 
             // $scope.NFA.addState(new FSMState("1"));
             // $scope.NFA.addState(new FSMState("2"));

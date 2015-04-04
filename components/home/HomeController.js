@@ -5,14 +5,17 @@ app.controller('HomeController',
         $scope.initializeNFA = function() {
             $scope.NFA = new ForceFSM("#NFA", 310, 600, ['a', 'b'], [], []);
 
-            // $scope.NFA.addState(new FSMState("1"));
-            // $scope.NFA.addState(new FSMState("2"));
-            // $scope.NFA.addState(new FSMState("3"));
-            // $scope.NFA.addTransition(new FSMTransition("E", "1", "3"));
-            // $scope.NFA.addTransition(new FSMTransition("a", "3", "1"));
-            // $scope.NFA.addTransition(new FSMTransition("a,b", "2", "3"));
-            // $scope.NFA.addTransition(new FSMTransition("a", "2", "2"));
-            // $scope.NFA.addTransition(new FSMTransition("b", "1", "2"));
+            $scope.NFA.addState("1");
+            $scope.NFA.addState("2");
+            $scope.NFA.addState("3");
+            $scope.NFA.addTransition("E", "1", "3");
+            $scope.NFA.addTransition("a", "3", "1");
+            $scope.NFA.addTransition("a,b", "2", "3");
+            $scope.NFA.addTransition("a", "2", "2");
+            $scope.NFA.addTransition("b", "1", "2");
+
+            console.log("states", $scope.NFA.states.toArray());
+            console.log("transitions", $scope.NFA.transitions.toArray());
 
             $scope.NFA.start();
         }

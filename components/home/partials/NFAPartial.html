@@ -8,10 +8,8 @@
             <button class="btn btn-default btn-xs" ng-click="NFA.setAcceptStates()">Toggle Accept State(s)</button> &nbsp;
         </div>
     </div>
-    <!-- //need to append this within the svg: http://bl.ocks.org/dustinlarimer/5888271 -->
-    
     <div id="NFA" class="panel-body" ng-init="initializeNFA()" ng-click="onClick($event)" ng-keydown="onKeyDown($event)" ng-blur="onBlur()" ng-dblclick="onDblClick($event)" tabindex="0" />
     
 </div>
 </div>
-<p>&#9632; Shift+Click to create a new state. &#9632; Double click to select/de-select a state. &#9632; Press "Delete" to delete the selected state(s). &#9632; Shift+Drag to connect states.</p>
+<p>Double-click on a state to select or de-select it.</p>

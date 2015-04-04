@@ -1,3 +1,19 @@
+var alphabet = ['a', 'b'],
+                sampleNodes = ['1', '2', '3'],
+                transitions = [
+                    new TransitionModel('1', '2', 'b'),
+                    new TransitionModel('1', '3', 'E'),
+                    new TransitionModel('2', '3', 'a'),
+                    new TransitionModel('2', '3', 'b'),
+                    new TransitionModel('2', '2', 'a'),
+                    new TransitionModel('3', '1', 'a')
+                ],
+                startState = '1',
+                acceptStates = ['1'];
+            $scope.NFA = new FSAModel("#NFA", 310, 610, sampleNodes, transitions, alphabet);
+
+
+
 $scope.createInteractiveNFA = function() {
             // set up SVG for D3
             var width = 960,

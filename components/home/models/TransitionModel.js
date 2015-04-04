@@ -6,6 +6,8 @@ app.service('TransitionModel', function(Map) {
         if(target[0] === 'N') this.target = target;
         else this.target = `N${target}`;
 
+        //symbols can be passed individually or as an array
+        //but are maintained as an array.
         if(Array.isArray(symbols)) this.symbols = symbols;
     	else {
     		this.symbols = [];

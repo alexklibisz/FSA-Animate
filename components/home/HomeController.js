@@ -14,8 +14,8 @@ app.controller('HomeController',
             $scope.NFA.addTransition("a", "2", "2");
             $scope.NFA.addTransition("b", "1", "2");
 
-            console.log("states", $scope.NFA.states.toArray());
-            console.log("transitions", $scope.NFA.transitions.toArray());
+            console.log("states", $scope.NFA.states.contents);
+            console.log("transitions", $scope.NFA.transitions.contents);
 
             $scope.NFA.start();
         }

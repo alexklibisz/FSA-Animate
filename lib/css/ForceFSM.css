@@ -2,14 +2,27 @@
     stroke: #000;
     fill: #FFCC00;
     stroke-width: 2px;
+    cursor: pointer;
 }
 
-.node text {}
+.state.selected circle {
+	fill: #FF6B00 !important;
+}
+
+.state .state-text {
+	cursor: pointer;
+}
 
 .transition-path {
     fill: none;
-    stroke: #666;
-    stroke-width: 1.5px;
+    stroke: gray;
+    stroke-width: 7px;
+    cursor: pointer;
+}
+
+.transition-path.selected {
+	stroke: black;
+	stroke-width: 8px;
 }
 
 .transition-texts text {
@@ -20,36 +33,6 @@ svg {
     border: 1px solid blue;
 }
 
-text {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 24px;
+svg text {
+	font-size: 1.5em;
 }
-/*.link {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
-}
-
-#licensing {
-  fill: green;
-}
-
-.link.licensing {
-  stroke: green;
-}
-
-.link.resolved {
-  stroke-dasharray: 0,2 1;
-}
-
-circle {
-  fill: #ccc;
-  stroke: #333;
-  stroke-width: 1.5px;
-}
-
-text {
-  font: 10px sans-serif;
-  pointer-events: none;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-}*/

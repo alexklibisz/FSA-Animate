@@ -2,6 +2,7 @@
  * Dependencies
  */
 var Map = require('./map.js');
+var Set = require('./set.js');
 
 /**
  * Protected variables.
@@ -25,11 +26,17 @@ var Map = require('./map.js');
  */
 function FSA(states, alphabet, transitions, startState, finalStates) {
     if (arguments.length !== 5) {
-        this.states = new Map();
-        this.alphabet = {};
-        this.transitions = [];
-        this.startState = [];
-        this.finalStates = [];
+      console.log("construction failure. args:", arguments.length);
+        this.states = [];               /* we will use this as a convenience for iterating
+                                           through all the states in the machine */
+        this.alphabet = [];             /* changed from {} to []. We just need to be able to
+                                           iterate through a list of possible symbols */
+        this.transitions = new Map();
+        this.startState = [];           /* a state ID should always be represented as
+                                           a sorted array of integers. */
+        this.finalStates = new Set();   /* In accordance with the above definition, 
+                                           the set of finalStates should always be
+                                           a Set of sorted arrays of integers */
     } else {
     	this.states = states;
 	    this.alphabet = alphabet;
@@ -56,8 +63,36 @@ FSA.prototype.print = function() {
 };
 
 /**
+  epsilon_closure(states)
+    <states> is a list of states one wants to compute the epsilon closure
+    for. (i.e., states === [[1],[2],[3]]).
+*/
+FSA.prototype.epsilon_closure = function(states) {
+  if (!(states instanceof Array)) {
+    console.err("epsilon_closure called without an Array argument.");
+    return false;
+  }
+
+  var eclosed_states = new Set(states);
+  var queue = new Set(states);
+  var delta = this.transitions;
+
+  while (queue.size() !== 0) {
+    /* add all states reachable on an epsilon transition to the queue
+       and the list of eclosed states */
+    var src = queue.data.shift();
+    var dst = delta.find([src, 'E']);
+
+    for (var i = 0; i < dst.length; i++) {
+      if (eclosed_states.insert(dst[i]))
+        queue.insert(dst[i]);
+    }
+  }
+
+  return eclosed_states;
+};
+
+/**
  * Export the class.
  */
-module.exports = function() {
-    return new FSA();
-}
+module.exports = FSA;

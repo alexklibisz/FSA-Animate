@@ -12,7 +12,7 @@ function genericMap() {
 
 genericMap.prototype.put = function(key, value) {
 	this.contents[key] = value;
-}
+};
 
 genericMap.prototype.find = function(key) {
 	if(this.contents.hasOwnProperty(key)) {
@@ -20,19 +20,19 @@ genericMap.prototype.find = function(key) {
 	} else {
 		return false;
 	}
-}
+};
 
 genericMap.prototype.remove = function(key) {
 	var value = this.find(key);
 	if(value != false) {
 		delete this.contents[key];
 	}
-}
+};
 
 genericMap.prototype.clear = function() {
 	for(var key in this.contents) {
 		delete this.contents[key];
 	}
-}
+};
 
 module.exports = genericMap;

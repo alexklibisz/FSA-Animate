@@ -27,6 +27,4 @@ app.controller('HomeController',
             // $scope.NFA.selectState(parent);
         }
 
-        $scope.addState = function($event) {}
-
     });

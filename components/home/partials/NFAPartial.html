@@ -2,7 +2,8 @@
     <div class="panel-heading">
         <span class="panel-title">NFA</span>
         <div class="buttons" style="float: right">
-            <button class="btn btn-default btn-xs" ng-click="addState($event)">Add State</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="NFA.addState()">Add State</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="NFA.addTransition()">Add Transition</button> &nbsp;
             <button class="btn btn-default btn-xs" ng-click="NFA.deleteSelected()">Delete Selected States</button> &nbsp;
             <button class="btn btn-default btn-xs">Set Start State</button> &nbsp;
             <button class="btn btn-default btn-xs" ng-click="NFA.setAcceptStates()">Toggle Accept State(s)</button> &nbsp;

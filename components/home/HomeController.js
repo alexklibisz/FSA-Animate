@@ -46,7 +46,9 @@ app.controller('HomeController',
         }
 
         $scope.deleteSelected = function() {
-            alert("coming soon");
+            d3.selectAll(".selected").each(function(d) {
+                $scope.NFA.removeNode(d.id);
+            });
         }
 
         $scope.initializeDFA = function() {}

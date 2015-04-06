@@ -3,14 +3,17 @@ app.controller('HomeController',
 
         //Initialize NFA and DFA -- called via ng-init
         $scope.initializeNFA = function() {
-            $scope.NFA = new ForceGraph("#NFA", 600, 310)
+            var width = $("#NFA").innerWidth(),
+                height = $("#NFA").parent().innerHeight();
+            console.log(width, height);
+            $scope.NFA = new ForceGraph("#NFA", width, height);
 
             $scope.NFA.addNode("start");
             $scope.NFA.addNode("1");
             $scope.NFA.addNode("2");
             $scope.NFA.addNode("3");
 
-            $scope.NFA.addLink("", "start", "1");
+            $scope.NFA.addLink("E", "start", "1");
             $scope.NFA.addLink("E", "1", "3");
             $scope.NFA.addLink("a,b", "2", "3");
             $scope.NFA.addLink("a", "3", "1");
@@ -34,16 +37,16 @@ app.controller('HomeController',
                 source = '',
                 target = '';
             while (name.trim().length === 0) {
-                name = prompt('(1/3) Symbols? (Separated by commas)', '');
+                name = prompt('(1/3): Symbols? (Separated by commas)', '');
             }
             while (source.trim().length === 0) {
-                source = prompt('(2/3) Source state?', '');
+                source = prompt('(2/3): Source state?', '');
             }
             while (target.trim().length === 0) {
-                target = prompt('(3/3) Target state?', '');
+                target = prompt('(3/3): Target state?', '');
             }
-            $scope.NFA.addLink(name, source, target);    
-            
+            $scope.NFA.addLink(name, source, target);
+
         }
 
         $scope.deleteSelected = function() {

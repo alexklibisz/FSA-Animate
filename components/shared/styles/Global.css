@@ -1,7 +1,25 @@
 .container-wide {
-	width: 95%;
-	max-width: 1400px;
+	width: 100%;
 }
+
+.navbar .container-wide {
+	width: 95%;
+}
+
+.inline-title {
+	font-weight: bold;
+	font-size: large;
+	padding: 10px;
+}
+
+#NFA {
+	min-height: 500px;
+}
+
+.alert p {
+	font-weight: bold;
+}
+
 .panel {
 	min-height: 390px;
 }

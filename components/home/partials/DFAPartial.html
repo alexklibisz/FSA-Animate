@@ -1,8 +1,16 @@
-<div class="panel panel-success">
+<div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">DFA</h3>
+        <span class="inline-title">Control Conversion:</span>
+        <button class="btn btn-sm btn-default">Step Forward</button>
+        <button class="btn btn-sm btn-default">Step Backward</button>
+        <button class="btn btn-sm btn-default">Run</button>
+        <button class="btn btn-sm btn-default">Pause</button>
     </div>
     <div class="panel-body">
-        
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="DFA" ng-init="initializeDFA()" />
+            </div>
+        </div>
     </div>
 </div>

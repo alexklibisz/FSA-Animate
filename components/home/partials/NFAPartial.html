@@ -1,15 +1,19 @@
-<div class="panel panel-success">
+<div class="panel panel-primary">
     <div class="panel-heading">
-        <span class="panel-title">NFA</span>
-        <div class="buttons" style="float: right">
-            <button class="btn btn-default btn-xs" ng-click="addState()">Add State</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="addTransition()">Add Transition</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="deleteSelected()">Delete Selected States</button> &nbsp;
+        <span class="inline-title">Construct NFA: </span>
+        <button class="btn btn-sm btn-default" ng-click="addState()">Add State</button>
+        <button class="btn btn-sm btn-default" ng-click="addTransition()">Add Transition</button>
+        <button class="btn btn-sm btn-default" ng-click="deleteSelected()">Delete Selected</button>
+        <button class="btn btn-sm btn-default" ng-click="">Mark Selected As Accept</button>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div id="NFA" ng-init="initializeNFA()" />
+                <div class="alert alert-info">
+                    <p>Double-click on a state to select or de-select it. The transition "E" is reserved for &epsilon;-transitions.</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="NFA" class="panel-body" ng-init="initializeNFA()"/>
-    
 </div>
-</div>
-<p>Double-click on a state to select or de-select it.</p>
-<p>The transition "E" is reserved for &epsilon;-transitions.</p>

@@ -42,7 +42,8 @@ app.controller('HomeController',
             while (target.trim().length === 0) {
                 target = prompt('(3/3) Target state?', '');
             }
-            $scope.NFA.addLink(name, source, target);
+            $scope.NFA.addLink(name, source, target);    
+            
         }
 
         $scope.deleteSelected = function() {

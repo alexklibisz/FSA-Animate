@@ -17,7 +17,7 @@
 .ForceGraph path {
   fill: none;
   stroke: black;
-  stroke-width: 4px;
+  stroke-width: 2px;
   cursor: pointer;
 }
 

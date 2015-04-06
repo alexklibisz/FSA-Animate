@@ -5,8 +5,6 @@
             <button class="btn btn-default btn-xs" ng-click="addState()">Add State</button> &nbsp;
             <button class="btn btn-default btn-xs" ng-click="addTransition()">Add Transition</button> &nbsp;
             <button class="btn btn-default btn-xs" ng-click="deleteSelected()">Delete Selected States</button> &nbsp;
-            <button class="btn btn-default btn-xs">Set Start State</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="setAcceptStates()">Toggle Accept State(s)</button> &nbsp;
         </div>
     </div>
     <div id="NFA" class="panel-body" ng-init="initializeNFA()"/>
@@ -14,3 +12,4 @@
 </div>
 </div>
 <p>Double-click on a state to select or de-select it.</p>
+<p>The transition "E" is reserved for &epsilon;-transitions.</p>

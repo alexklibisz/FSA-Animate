@@ -1,0 +1,32 @@
+/* Styles go here */
+
+.ForceGraph circle {
+  stroke: #000;
+  fill: #FFCC00;
+  stroke-width: 2px;
+  text-anchor: middle;
+}
+.ForceGraph g.node {
+  cursor: pointer;
+}
+
+.ForceGraph g.selected circle {
+  fill: #FF6B00 !important;
+}
+
+.ForceGraph path {
+  fill: none;
+  stroke: black;
+  stroke-width: 4px;
+  cursor: pointer;
+}
+
+.ForceGraph text {
+  fill: black;
+  font-size: 1.0em;
+  
+}
+
+.ForceGraph .link textPath {
+  text-anchor: middle;
+}

@@ -2,14 +2,14 @@
     <div class="panel-heading">
         <span class="panel-title">NFA</span>
         <div class="buttons" style="float: right">
-            <button class="btn btn-default btn-xs" ng-click="NFA.addState()">Add State</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.addTransition()">Add Transition</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.deleteSelected()">Delete Selected States</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="addState()">Add State</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="addTransition()">Add Transition</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="deleteSelected()">Delete Selected States</button> &nbsp;
             <button class="btn btn-default btn-xs">Set Start State</button> &nbsp;
-            <button class="btn btn-default btn-xs" ng-click="NFA.setAcceptStates()">Toggle Accept State(s)</button> &nbsp;
+            <button class="btn btn-default btn-xs" ng-click="setAcceptStates()">Toggle Accept State(s)</button> &nbsp;
         </div>
     </div>
-    <div id="NFA" class="panel-body" ng-init="initializeNFA()" ng-click="onClick($event)" ng-keydown="onKeyDown($event)" ng-blur="onBlur()" ng-dblclick="onDblClick($event)" tabindex="0" />
+    <div id="NFA" class="panel-body" ng-init="initializeNFA()"/>
     
 </div>
 </div>

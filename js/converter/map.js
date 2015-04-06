@@ -8,7 +8,7 @@
 
 function genericMap() {
 	this.contents = {};
-}
+};
 
 genericMap.prototype.put = function(key, value) {
 	this.contents[key] = value;

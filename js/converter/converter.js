@@ -1,3 +1,10 @@
+/*
+   Dependencies
+*/
+var FSA = require("./fsa.js");
+var Map = require("./map.js");
+var Set = require("./set.js");
+
 /**
  * Protected variables
  */
@@ -5,9 +12,9 @@
 /**
  * Class constructor.
  */
-function converter(nfa, dfa) {
+function converter(nfa) {
 	this.nfa = nfa;
-	this.dfa = dfa;  
+  this.dfa = undefined;
 }
 
 
@@ -34,8 +41,9 @@ converter.prototype.convert = function() {
        dfa.alphabet = nfa.alphabet
        dfa.transitions = empty
        dfa.startState = epsilon_closure(nfa.startState)
-       dfa.finalStates = power set of nfa.finalStates
-     set dfa.transitions[[],x] := [], for each symbol x
+       dfa.finalStates = any state in dfa.states whose label contains an element
+                         of nfa.finalStates
+     set dfa.transitions[[],x] := [[]], for each symbol x
 
      for each state S in (dfa.states - []):
        for each symbol sym in dfa.alphabet:
@@ -43,6 +51,44 @@ converter.prototype.convert = function() {
            of the epsilon_closures of all the states S
            can go to on sym
   */
+
+  var i, j;
+  var tmp_array = [];
+
+  var states = this.nfa.power_set(this.nfa.states);
+  var sigma = this.nfa.alphabet;
+  var delta = new Map();  // undefined transition function
+  var initState = this.nfa.epsilon_closure([this.nfa.startState]).toArray();
+  var finalStates = [];   // undefined
+
+  // flatten initState array
+  for (i = 0; i < initState; i++) {
+    tmp_array.push(initState[i][0]);
+  }
+  initState = tmp_array;
+
+  // define delta's 'null', or 'error', state: loop back on all symbols
+  for (i = 0; i < sigma.length; i++) {
+    delta.put([[], sigma[i]], [[]]);
+  }
+
+  // compute finalStates
+  for (i = 0; i < states.length; i++) {
+    for (j = 0; j < this.nfa.finalStates.length; j++) {
+      if (states[i].indexOf(this.nfa.finalStates[j][0]) !== -1) {
+        finalStates.push(states[i]);
+        break;
+      }
+    }
+  }
+
+  /* begin looping through the states in the DFA to add transitions */
+  for (i = 0; i < states.length; i++) {
+    for (j = 0; j < sigma.length; j++)
+      delta.put([states[i],sigma[j]], this.nfa.eclosed_transitions(states[i],sigma[j]));
+  }
+
+  this.dfa = new FSA(states, sigma, delta, initState, finalStates);
 }
 
 /**

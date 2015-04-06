@@ -1,0 +1,127 @@
+
++==========================+
+|  CONVERTER USAGE NOTES   |
++==========================+
+
+General Notes:
+  The major caveat with the input is that you have to pay painstakingly
+  close attention to the dimensionality of your lists when it comes to
+  states. NFAs and DFAs are both instances of FSAs, but as you know,
+  their state labels are different. I would suggest in the NFA, to limit
+  the creation of state labels to the natural numbers. More detailed
+  info below:
+
+=============
+ DATA FORMAT
+-------------
+
+  FSA(states, alphabet, transitions, startState, finalState)
+
+    <states>
+      Expects a two-dimensional list where the set of NFA states
+      {1, 2, 3, 4} is equivalent to [ [1],[2],[3],[4] ]. The
+      DFA states are also represented by a two-dimensional list,
+      but the major difference is what's in the sublists. The DFA
+      state labels are sets of NFA state labels, flattened to
+      a one-dimensional array. For example, the set of DFA states
+      { {}, {1}, {2}, {1,2} } = P({1,2}) would be represented as
+      [ [], [1], [2], [1,2] ], so that much is fairly intuitive.
+      This is the same format as returned by (new FSA()).power_set().
+
+    <alphabet>
+      Expects a list of letters. IMPORTANT: Don't put 'E' in this
+      set, or the conversion algorithm will treat it as an input
+      symbol. For example, the alphabet {a, b, c} is equivalent to
+      ['a','b','c']. It's only been tested for single letters, but
+      I'm guessing strings of letters would work just fine. I would
+      stick single letters, as they're cleaner anyway, and I would
+      definitely not use numbers at all, because that will be a
+      nightmare to parse unless we change a few things about the
+      transition function. (You'll see what I mean if you examine
+      the JSON output of the transition table. Run nfa1.js.)
+
+    <transitions> (is a Map)
+      This is a little messy, but it's workable. To define a transition,
+      you just add a list-typed key to the map, namely [<state>,<symbol>], 
+      letting the associated value be the two-dimensional list of target
+      states. Note that <state> in the key is a one-dimensional list
+      because it describes one state, while the value is a two-dimensional
+      list because it's a set of states. Example: For an NFA, to set
+
+        delta(2,b) = {1,3},
+
+      write:
+
+        delta = new Map();
+        delta.put( [[2],'b'], [[1],[3]] );
+
+      For a DFA:
+
+        delta({3,5},b) = {1,3},
+
+      write:
+        
+        delta = new Map();
+        delta.put( [[3,5],'b'], [1,3] );
+
+      This is because the DFA state labels use set notation in the book,
+      but they're not actual sets. You know this, but I'm just being verbose.
+
+      Again, this works when you search the map using the list-typed key,
+      but the JSON output is messy. Here's an example of the JSON representation
+      of the transitions object in the NFA from running nfa1.js:
+
+        {"contents":{",a":[], ",b":[], "1,a":[2], "1,b":[], "2,a":[], "2,b":[1,3] ...
+
+      Apparently, the list in the key gets flattened to a string such as
+      "1,2,3,a" when the key is defined [[1,2,3],'a']. In this case, the
+      label is from a DFA state, namely {1,2,3}. This is the parsing issue
+      for when you want to convert the JSON to the visual representation.
+      Searching for the first comma from the end of the string gives you
+      the index that splits the string into the state label on the left
+      and the transition symbol on the right.
+
+      You'll also notice that the first keys are ",a" and ",b". These
+      represent the transitions from the ACTUAL DFA state labeled {} for the
+      empty set, which as you know is the target state which
+      corresponds to the omitted transition arrows in the NFA.
+
+      If this is too clunky or you have an idea on how to clean it up,
+      by all means shoot me an email.
+
+    <startState>
+      This is comparatively simple. For the NFA case, the label 2 is
+      equivalent to <startState> = [2]. For the DFA case, the label
+      {2,3} is equivalent to <startState> = [2,3].
+
+    <finalStates>
+      This is a set of state labels as in <states>. For the NFA case,
+      the set of states {1,2} is equivalent to [ [1],[2] ]. For the
+      DFA case, the set of states { {1,3,4}, {1,3,5} } is equivalent to
+      [ [1,3,4], [1,3,5] ].
+
+==========================================
+
+======================
+ USEFUL FSA FUNCTIONS
+----------------------
+
+  power_set(states, inc_null)
+    Computes the power set of an FSA-formatted set of states.
+    e.g. (new FSA()).power_set([[1],[2]]) == [ [], [1], [2], [1,2] ].
+    If inc_null == false:       "   "     == [ [1], [2], [1,2] ].
+
+  epsilon_closure(states)
+    Computes the set of states reachable from the set of input <states>
+    on epsilon transitions alone. 
+
+  eclosed_transitions(states, symb)
+    Say that you want to know all the states in the NFA that are reachable
+    from the states specified in the DFA label {1,2,3}. This function goes
+    through each state, 1 then 2 then 3, computing the union of those sets
+    of states reachable from each specified NFA state on <symb>. <states>
+    takes the form, in this case, [1,2,3]. In other words, it simply takes
+    the DFA label for which you want to find the transition, and returns 
+    the target DFA state. I can see this being super useful for
+    highlighting the set of target states in the NFA when adding a DFA
+    transition during the conversion. (Run nfa1.js.)

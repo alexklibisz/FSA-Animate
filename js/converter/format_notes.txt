@@ -132,7 +132,7 @@ General Notes:
       If this is too clunky or you have an idea on how to clean it up,
       by all means shoot me an email.
 
-      Alex: Yeah we should review this.
+      Alex: Yeah we should review this to see if we can simplify things.
 
     <startState>
       This is comparatively simple. For the NFA case, the label 2 is

@@ -28,6 +28,10 @@ General Notes:
       [ [], [1], [2], [1,2] ], so that much is fairly intuitive.
       This is the same format as returned by (new FSA()).power_set().
 
+      Alex: Is it necessary to flatten the dfa states? I ask because
+      flattening would mean I have to maintain two different formats on
+      my end as well.
+
     <alphabet>
       Expects a list of letters. IMPORTANT: Don't put 'E' in this
       set, or the conversion algorithm will treat it as an input
@@ -67,11 +71,50 @@ General Notes:
       This is because the DFA state labels use set notation in the book,
       but they're not actual sets. You know this, but I'm just being verbose.
 
+      Alex: yeah this is a tough one to do in a clean manner. I'm assuming
+      we don't need to create a new map for every delta transition, but just
+      keep a running one?
+      One thing that comes to mind for cleaning this up a bit is to use a comma-separated
+      string in a specific format for map keys, instead of an object. We could use
+      a combination of .join() and then .split(). Example:
+
+        delta({3,5},b) = {1,3} becomes:
+        var delta = new Map(),
+          currentState = [3,5],
+          symbolRead = 'b',
+          key = currentState.sort().join(","); // key = "3,5"
+          key += "-" + symbolRead; // key = "3,5-b"
+        delta.put(key, [1,3]);
+
+        ...then to "dereference" it if necessary:
+        var keyContents = key.split("-"),
+          currentState = keyContents[0].split(","),
+          symbolRead = keyContents[1];
+
+
+
       Again, this works when you search the map using the list-typed key,
       but the JSON output is messy. Here's an example of the JSON representation
       of the transitions object in the NFA from running nfa1.js:
 
         {"contents":{",a":[], ",b":[], "1,a":[2], "1,b":[], "2,a":[], "2,b":[1,3] ...
+
+
+        Alex: this following "flattened" part may be because you're using
+        JSON, which serializes an object to print as a string. You can de-serialize
+        it back into an object using JSON.parse(/* your json object here */).
+
+        Example (from the node interpretter): 
+        var a = { name: "Alex", age: "20", major: "CS"}
+        a // (print a)
+        Object { name: "Alex", age: "20", major: "CS" }
+        var JSONa = JSON.stringify(a);
+        JSONa // (print JSONa)
+        "{"name":"Alex","age":"20","major":"CS"}"
+        var aObj = JSON.parse(JSONa);
+        aObj // (print aObj)
+        Object { name: "Alex", age: "20", major: "CS" }
+
 
       Apparently, the list in the key gets flattened to a string such as
       "1,2,3,a" when the key is defined [[1,2,3],'a']. In this case, the
@@ -88,6 +131,8 @@ General Notes:
 
       If this is too clunky or you have an idea on how to clean it up,
       by all means shoot me an email.
+
+      Alex: Yeah we should review this.
 
     <startState>
       This is comparatively simple. For the NFA case, the label 2 is

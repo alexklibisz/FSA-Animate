@@ -65,6 +65,8 @@ app.controller('HomeController',
                 height = $("#NFA").parent().innerHeight();
 
             DFAVisual = new ForceGraph("#DFA", width, height);
+
+            DFAVisual.addNode("start");
         }
 
         /**
@@ -78,7 +80,6 @@ app.controller('HomeController',
 
             //Determine the states and transitions which exist in NFAVisual, but not NFA
             
-
             //Call addNode and addLink to syncronize for the new states and transitions.
         }
 

@@ -2,13 +2,24 @@ app.controller('HomeController',
     function($scope, $location) {
 
         /**
-         * declare variables shared within the HomeController scope.
+         * What is $scope? 
+         * 
+         * $scope is what angular uses to bind data between the view and controller.
+         * So anything variable, array, or object that is prefixed by $scope is accessible in both the 
+         * view and the controller. If it is specifed with ng-bind in the view, then a change of value
+         * will persist between the view and controller and vice-versa. I.e. two-way binding. For our
+         * purposes it is most useful for binding button clicks to controller functions.
+         * 
          */
-        $scope.NFA = null; // haven't added the DFA class yet
-        $scope.DFA = null; // haven't added the DFA class yet
-        $scope.NFAVisual = null; // initialized in initializeNFA()
-        $scope.DFAVisual = null; // initialized in initializeDFA()
-        $scope.converting = false; // used in runConversion() and pauseConversion()
+        
+        /**
+         * declare variables shared within the HomeController.
+         */
+        var NFA = null; // haven't added the DFA class yet
+        var DFA = null; // haven't added the DFA class yet
+        var NFAVisual = null; // initialized in initializeNFA()
+        var DFAVisual = null; // initialized in initializeDFA()
+        var convertinging = false; // used in runConversion() and pauseConversion()
 
         /**
          * called once the div with id "NFA" has been initialized. 
@@ -26,23 +37,23 @@ app.controller('HomeController',
 
             //create instance of the ForceGraph class in the
             //div with id "NFA".
-            $scope.NFAVisual = new ForceGraph("#NFA", width, height);
+            NFAVisual = new ForceGraph("#NFA", width, height);
 
             //add the sample NFA states
-            $scope.NFAVisual.addNode("start");
-            $scope.NFAVisual.addNode("1");
-            $scope.NFAVisual.addNode("2");
-            $scope.NFAVisual.addNode("3");
+            NFAVisual.addNode("start");
+            NFAVisual.addNode("1");
+            NFAVisual.addNode("2");
+            NFAVisual.addNode("3");
 
             //add the sample NFA transitions
-            $scope.NFAVisual.addLink("E", "start", "1");
-            $scope.NFAVisual.addLink("E", "1", "3");
-            $scope.NFAVisual.addLink("a,b", "2", "3");
-            $scope.NFAVisual.addLink("a", "3", "1");
-            $scope.NFAVisual.addLink("a,b", "2", "3");
-            $scope.NFAVisual.addLink("a", "2", "2");
-            $scope.NFAVisual.addLink("b", "1", "2");
-            $scope.syncNFA();
+            NFAVisual.addLink("E", "start", "1");
+            NFAVisual.addLink("E", "1", "3");
+            NFAVisual.addLink("a,b", "2", "3");
+            NFAVisual.addLink("a", "3", "1");
+            NFAVisual.addLink("a,b", "2", "3");
+            NFAVisual.addLink("a", "2", "2");
+            NFAVisual.addLink("b", "1", "2");
+            syncNFA();
         }
 
         /**
@@ -53,16 +64,16 @@ app.controller('HomeController',
             var width = $("#NFA").innerWidth(),
                 height = $("#NFA").parent().innerHeight();
 
-            $scope.DFAVisual = new ForceGraph("#DFA", width, height);
+            DFAVisual = new ForceGraph("#DFA", width, height);
         }
 
         /**
          * called from: $scope.addState(), $scope.addTransition(), $scope.deleteSelected()
          * 
          * syncs the NFA states and transitions to the corresponding states and transitions
-         * in $scope.NFA         
+         * in NFA         
          */
-        $scope.syncNFA = function() {
+        function syncNFA() {
             console.log("syncNFA called");
 
             //Determine the states and transitions which exist in NFAVisual, but not NFA
@@ -74,9 +85,9 @@ app.controller('HomeController',
         /** 
          * called from: $scope.stepForward(), $scope.stepBackward(), $scope.runConversion(), $scope.pauseConversion()
          *
-         * analagous in functionality to syncNFA, but this time $scope.DFAVisual is "playing catch-up"
+         * analagous in functionality to syncNFA, but this time DFAVisual is "playing catch-up"
          */
-        $scope.syncDFA = function() {
+        function syncDFA() {
             console.log("syncDFA called");
         }
 
@@ -92,8 +103,8 @@ app.controller('HomeController',
             while (name.trim().length === 0 || name.trim().length > 3) {
                 name = prompt('State Name? (1 to 3 characters)', '');
             }
-            $scope.NFAVisual.addNode(name);
-            $scope.syncNFA();
+            NFAVisual.addNode(name);
+            syncNFA();
         }
 
         /**
@@ -118,8 +129,8 @@ app.controller('HomeController',
             while (target.trim().length === 0) {
                 target = prompt('(3/3): Target state?', '');
             }
-            $scope.NFAVisual.addLink(name, source, target);
-            $scope.syncNFA();
+            NFAVisual.addLink(name, source, target);
+            syncNFA();
         }
 
         /**
@@ -130,9 +141,9 @@ app.controller('HomeController',
          */
         $scope.deleteSelected = function() {
             d3.selectAll(".selected").each(function(d) {
-                $scope.NFAVisual.removeNode(d.id);
+                NFAVisual.removeNode(d.id);
             });
-            $scope.syncNFA();
+            syncNFA();
         }
 
         /**
@@ -142,7 +153,7 @@ app.controller('HomeController',
          */
         $scope.stepForward = function() {
             console.log("stepForward called");
-            $scope.syncDFA();
+            syncDFA();
         }
 
         /**
@@ -152,7 +163,7 @@ app.controller('HomeController',
          */
         $scope.stepBackward = function() {
             console.log("stepBackward called");
-            $scope.syncDFA();
+            syncDFA();
         }
 
         /**
@@ -163,8 +174,8 @@ app.controller('HomeController',
          */
         $scope.runConversion = function() {
             console.log("runConversion called");
-            $scope.convert = true;
-            while ($scope.convert === true) {   //add something to determine whether the conversion is complete
+            converting = true;
+            while (converting === true) {   //add something to determine whether the conversion is complete
                 
                 //find a clean, non-blocking way to pause here.
                 
@@ -179,8 +190,8 @@ app.controller('HomeController',
          */
         $scope.pauseConversion = function() {
             console.log("pauseConversion called");
-            $scope.convert = false;
-            $scope.syncDFA();
+            converting = false;
+            syncDFA();
         }
 
     });

@@ -46,12 +46,17 @@ app.controller('HomeController',
             NFAVisual.addNode("3");
 
             //add the sample NFA transitions
-            // NFAVisual.addLink("E", "start", "1");
             NFAVisual.addLink("E", "1", "3");
             NFAVisual.addLink("a,b", "2", "3");
             NFAVisual.addLink("a", "3", "1");
             NFAVisual.addLink("a", "2", "2");
             NFAVisual.addLink("b", "1", "2");
+
+            d3.select('#N1').classed('selected', true);
+            $scope.setStartState();
+            $scope.setAcceptStates();
+
+
             syncNFA();
         }
 
@@ -65,7 +70,6 @@ app.controller('HomeController',
 
             DFAVisual = new ForceGraph("#DFA", width, height);
 
-            DFAVisual.addNode("start");
         }
 
         /**
@@ -99,11 +103,11 @@ app.controller('HomeController',
          * 
          */
         $scope.addState = function() {
-            var name = '';
-            while (name.trim().length === 0 || name.trim().length > 3) {
-                name = prompt('State Name? (1 to 3 characters)', '');
+            var id = '';
+            while (id.trim().length === 0 || name.trim().length > 3) {
+                id = prompt('State Id? (1 to 3 characters)', '');
             }
-            NFAVisual.addNode(name);
+            NFAVisual.addNode(id);
             syncNFA();
         }
 
@@ -117,7 +121,7 @@ app.controller('HomeController',
          * isn't corrupted.
          */
         $scope.addTransition = function() {
-            var name = '',
+            var symbols = '',
                 source = '',
                 target = '';
             while (name.trim().length === 0) {
@@ -149,7 +153,6 @@ app.controller('HomeController',
         $scope.setStartState = function() {
             NFAVisual.toggleClass('.selected', 'start', false);
             NFAVisual.lockNode(d3.select('.selected.start').attr('id'));
-            console.log(NFAVisual.getNodes());
             syncNFA();
         }
 

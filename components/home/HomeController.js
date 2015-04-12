@@ -50,7 +50,6 @@ app.controller('HomeController',
             NFAVisual.addLink("E", "1", "3");
             NFAVisual.addLink("a,b", "2", "3");
             NFAVisual.addLink("a", "3", "1");
-            NFAVisual.addLink("a,b", "2", "3");
             NFAVisual.addLink("a", "2", "2");
             NFAVisual.addLink("b", "1", "2");
             syncNFA();

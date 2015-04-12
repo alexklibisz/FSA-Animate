@@ -11,7 +11,7 @@ app.controller('HomeController',
          * purposes it is most useful for binding button clicks to controller functions.
          * 
          */
-        
+
         /**
          * declare variables shared within the HomeController.
          */
@@ -32,18 +32,25 @@ app.controller('HomeController',
         $scope.initializeNFA = function() {
 
             //extract the width and height of the div.
-            var width = $("#NFA").innerWidth(),
-                height = $("#NFA").parent().innerHeight();
+            var width = $("#NFA").innerWidth() - 30,
+                height = $("#NFA").parent().innerHeight() -30;
 
             //create instance of the ForceGraph class in the
             //div with id "NFA".
             NFAVisual = new ForceGraph("#NFA", width, height);
 
+            $scope.sampleNFA1();
+
+            syncNFA();
+        }
+
+        $scope.sampleNFA1 = function () {
+            NFAVisual.removeAll();
             //add the sample NFA states
             // NFAVisual.addNode("start");
-            NFAVisual.addNode("1");
             NFAVisual.addNode("2");
             NFAVisual.addNode("3");
+            NFAVisual.addNode("1");
 
             //add the sample NFA transitions
             NFAVisual.addLink("E", "1", "3");
@@ -55,9 +62,26 @@ app.controller('HomeController',
             d3.select('#N1').classed('selected', true);
             $scope.setStartState();
             $scope.setAcceptStates();
+        }
 
+        $scope.sampleNFA2 = function() {
+            NFAVisual.removeAll();
+            NFAVisual.addNode("1");
+            NFAVisual.addNode("2");
+            NFAVisual.addNode("3");
+            NFAVisual.addNode("4");
 
-            syncNFA();
+            NFAVisual.addLink("0,1", "1", "1");
+            NFAVisual.addLink("1", "1", "2");
+            NFAVisual.addLink("0,1", "2", "3");
+            NFAVisual.addLink("0,1", "3", "4");
+
+            d3.select('#N1').classed('selected', true);
+            $scope.setStartState();
+            d3.select('#N1').classed('selected', false);
+            d3.select('#N4').classed('selected', true);
+            $scope.setAcceptStates();
+
         }
 
         /**
@@ -65,8 +89,8 @@ app.controller('HomeController',
          */
         $scope.initializeDFA = function() {
             //extract the width and height of the div.
-            var width = $("#NFA").innerWidth(),
-                height = $("#NFA").parent().innerHeight();
+            var width = $("#NFA").innerWidth() - 30,
+                height = $("#NFA").parent().innerHeight() - 30;
 
             DFAVisual = new ForceGraph("#DFA", width, height);
 
@@ -82,7 +106,7 @@ app.controller('HomeController',
             console.log("syncNFA called");
 
             //Determine the states and transitions which exist in NFAVisual, but not NFA
-            
+
             //Call addNode and addLink to syncronize for the new states and transitions.
         }
 
@@ -161,7 +185,7 @@ app.controller('HomeController',
             syncNFA();
         }
 
-        
+
 
         /**
          * called when a user clicks the "Step Forward" button.
@@ -192,10 +216,10 @@ app.controller('HomeController',
         $scope.runConversion = function() {
             console.log("runConversion called");
             converting = true;
-            while (converting === true) {   //add something to determine whether the conversion is complete
-                
+            while (converting === true) { //add something to determine whether the conversion is complete
+
                 //find a clean, non-blocking way to pause here.
-                
+
                 $scope.stepForward();
             }
         }

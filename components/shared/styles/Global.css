@@ -16,6 +16,10 @@
 	min-height: 500px;
 }
 
+#NFA svg {
+	margin: 30px auto 0px auto;
+}
+
 .alert p {
 	font-weight: bold;
 }

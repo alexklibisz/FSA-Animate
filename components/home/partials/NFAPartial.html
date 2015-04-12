@@ -10,10 +10,14 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-lg-12">
-                <div id="NFA" ng-init="initializeNFA()" />
                 <div class="alert alert-info">
-                    <p>Double-click on a state to select or de-select it. The transition "E" is reserved for &epsilon;-transitions.</p>
+                    <p>Double-click on a state to select or de-select it || The transition "E" is reserved for &epsilon;-transitions || The start state has a blue border. || Accept states are green.
+                    <button class="btn btn-xs btn-default" ng-click="sampleNFA1()">Sample NFA 1</button>
+                    <button class="btn btn-xs btn-default" ng-click="sampleNFA2()">Sample NFA 2</button>
+                    </p>
                 </div>
+                <div id="NFA" ng-init="initializeNFA()" />
+                
             </div>
         </div>
     </div>

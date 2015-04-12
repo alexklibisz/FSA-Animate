@@ -11,7 +11,25 @@
 }
 
 .ForceGraph g.selected circle {
-  fill: #FF6B00 !important;
+  fill: #FF6B00;
+}
+
+.ForceGraph g.start circle {
+  fill: #66FFFF !important;
+}
+
+.ForceGraph g.selected.start circle {
+  fill: #5CE6E6 !important;
+}
+
+.ForceGraph g.accept circle {
+  fill: #99FF66 !important;
+}
+
+
+
+.ForceGraph g.selected.accept circle {
+  fill: #33CC33 !important;
 }
 
 .ForceGraph path {

@@ -40,13 +40,13 @@ app.controller('HomeController',
             NFAVisual = new ForceGraph("#NFA", width, height);
 
             //add the sample NFA states
-            NFAVisual.addNode("start");
+            // NFAVisual.addNode("start");
             NFAVisual.addNode("1");
             NFAVisual.addNode("2");
             NFAVisual.addNode("3");
 
             //add the sample NFA transitions
-            NFAVisual.addLink("E", "start", "1");
+            // NFAVisual.addLink("E", "start", "1");
             NFAVisual.addLink("E", "1", "3");
             NFAVisual.addLink("a,b", "2", "3");
             NFAVisual.addLink("a", "3", "1");
@@ -145,6 +145,20 @@ app.controller('HomeController',
             });
             syncNFA();
         }
+
+        $scope.setStartState = function() {
+            NFAVisual.toggleClass('.selected', 'start', false);
+            NFAVisual.lockNode(d3.select('.selected.start').attr('id'));
+            console.log(NFAVisual.getNodes());
+            syncNFA();
+        }
+
+        $scope.setAcceptStates = function() {
+            NFAVisual.toggleClass('.selected', 'accept', true);
+            syncNFA();
+        }
+
+        
 
         /**
          * called when a user clicks the "Step Forward" button.

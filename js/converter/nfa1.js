@@ -5,6 +5,9 @@ var Map = require("./map.js");
 
 var states = [[1],[2],[3]];
 
+var states = ['1', '2', '3'];
+
+
 var delta = new Map();
 delta.put([[1],'a'], [[2]]);
 delta.put([[1],'b'], []);
@@ -16,8 +19,18 @@ delta.put([[3],'a'], []);
 delta.put([[3],'b'], []);
 delta.put([[3],'E'], [[1]]);
 
+delta.put('1-E', '3');
+delta.put('1-b', '2');
+delta.put('2-a', '2,3');
+
+
 var init_state = [1];
+
+var init_state = '1';
+
 var final_states = [[1],[3]];
+
+var final_states = ['1','3'];
 
 var nfa = new FSA(states,['a','b'],delta,init_state,final_states);
 

@@ -2,24 +2,13 @@ app.controller('HomeController',
     function($scope, $location) {
 
         /**
-         * What is $scope? 
-         * 
-         * $scope is what angular uses to bind data between the view and controller.
-         * So anything variable, array, or object that is prefixed by $scope is accessible in both the 
-         * view and the controller. If it is specifed with ng-bind in the view, then a change of value
-         * will persist between the view and controller and vice-versa. I.e. two-way binding. For our
-         * purposes it is most useful for binding button clicks to controller functions.
-         * 
-         */
-
-        /**
          * declare variables shared within the HomeController.
          */
         var NFA = null; // haven't added the DFA class yet
         var DFA = null; // haven't added the DFA class yet
         var NFAVisual = null; // initialized in initializeNFA()
         var DFAVisual = null; // initialized in initializeDFA()
-        var converter = new Converter();
+        var converter = null; // initialized in initializeNFA()
         var converting = false; // used in runConversion() and pauseConversion()
 
         /**
@@ -38,12 +27,27 @@ app.controller('HomeController',
 
             NFAVisual = new ForceGraph("#NFA", width, height);
 
-            // Actual
+            // Actual and converter
             NFA = new FSA();
+            converter = new Converter(NFA);
 
             $scope.sampleNFA1();
             syncNFA();
         }
+
+        /**
+         * analagous to initialize NFA, but with no sample states and transitions.
+         */
+        $scope.initializeDFA = function() {
+            //extract the width and height of the div.
+            var width = $("#DFA").innerWidth(),
+                height = $("#DFA").parent().innerHeight();
+
+            DFAVisual = new ForceGraph("#DFA", width, height);
+
+            syncDFA();
+        }
+
 
         $scope.sampleNFA1 = function() {
             NFAVisual.removeAll();
@@ -102,78 +106,69 @@ app.controller('HomeController',
         }
 
         /**
-         * analagous to initialize NFA, but with no sample states and transitions.
-         */
-        $scope.initializeDFA = function() {
-            //extract the width and height of the div.
-            var width = $("#NFA").innerWidth(),
-                height = $("#NFA").parent().innerHeight();
-
-            DFAVisual = new ForceGraph("#DFA", width, height);
-
-        }
-
-        /**
-         * called from: $scope.addState(), $scope.addTransition(), $scope.deleteSelected()
+         * Clears the NFA states array and transitions map and re-creates them
+         * from the current NFAVisual nodes and links. 
          * 
-         * syncs the actual NFA states and transitions to the corresponding states and transitions
-         * in visual NFA         
+         * This is admittedly a somewhat wasteful implementation, as it completely
+         * re-creates the array and map on every call.
          */
         function syncNFA() {
-            console.log("syncNFA called");
+            var i, j, key, reachableStates, visualStates = NFAVisual.getNodes(),
+                visualTransitions = NFAVisual.getLinks();
 
-            var i, j, tmp, transition,
-                visualStates = new Map(),
-                visualTransitions = new Map(),
-                actualStates = new Map(),
-                actualTransitions = new Map();
-
-            //Convert the visual states and transitions to maps
-            visualStates.putArray(NFAVisual.getNodes(), 'id');
-            visualTransitions.putArray(NFAVisual.getLinks(), 'elementId');
-
-            // //Convert the actual states and transitions to maps
-            actualStates.putArray(NFA.states);
-            actualTransitions.putArray(NFA.transitions);
-
-            //Add any states from the visual that are not in the actual
-            tmp = visualStates.toArray();
-            for (i = 0; i < tmp.length; i++) {
-                if (actualStates.find(tmp[i].id) === false) {
-                    NFA.states.push(tmp[i].id);
-                    actualStates.put(tmp[i].id, tmp[i].id);
-                }
+            // Clear and recreate the states.
+            NFA.states = [];
+            for (i = 0; i < visualStates.length; i++) {
+                NFA.states.push(visualStates[i].id);
             }
-
-            //Add any transitions from the visual that are not in the actual
-            tmp = visualTransitions.toArray();
-            for (i = 0; i < tmp.length; i++) {
-                var sourceState = (tmp[i].id.split('-'))[0],
-                    targetState = (tmp[i].id.split('-'))[1],
-                    symbols = (tmp[i].label.split(','));
+            // Clear and recreate the transitions.
+            NFA.transitions.clear();
+            for (i = 0; i < visualTransitions.length; i++) {
+                var sourceState = (visualTransitions[i].id.split('-'))[0],
+                    targetState = (visualTransitions[i].id.split('-'))[1],
+                    symbols = (visualTransitions[i].label.split(','));
+                console.log(sourceState, targetState, symbols);
 
                 for (j = 0; j < symbols.length; j++) {
                     key = [sourceState, symbols[j]].join('-');
-                    transition = actualTransitions.find(key);
-                    if (!actualTransitions.find(key)) {
-                        actualTransitions.put(key, [targetState]);
+                    reachableStates = NFA.transitions.find(key);
+                    if (!reachableStates) {
                         NFA.transitions.put(key, [targetState]);
-                    } else if(transition.join(',').indexOf(targetState + ',') === -1){
-                        targetState = [targetState].concat(transition).sort();
-                        actualTransitions.put(key, targetState);
-                        NFA.transitions.put(key, targetState);
+                    } else {
+                        NFA.transitions.put(key, reachableStates.concat(targetState).sort())
                     }
                 }
             }
+            // Clear and specify the start states.
+            d3.selectAll('.start').each(function(d, i) {
+                NFA.startState = d.id;
+            });
+            // Clear and specifcy the accept states.
+            NFA.finalStates = [];
+            d3.selectAll('.accept').each(function(d,i) {
+                NFA.finalStates.push(d.id);
+            });
+
+
+            console.log('NFA.states', JSON.stringify(NFA.states));
+            console.log('NFA.transitions', JSON.stringify(NFA.transitions));
+            console.log('NFA.startState', NFA.startState);
+            console.log('NFA.finalStates', NFA.finalStates);
         }
 
         /** 
-         * called from: $scope.stepForward(), $scope.stepBackward(), $scope.runConversion(), $scope.pauseConversion()
-         *
-         * analagous in functionality to syncNFA, but this time DFAVisual is "playing catch-up"
+         * 
          */
         function syncDFA() {
             console.log("syncDFA called");
+
+            //Add any states that exist in DFA and not in DFAVisual to DFAVisual
+            
+            //Add any transitions that exist in DFA and not in DFAVisual to DFAVisual
+            
+            //Make sure that DFAVisual's start state is the same as DFA's
+            
+            //Make sure that DFAVisual's accpet states are the same as DFA's
         }
 
         /**
@@ -281,12 +276,16 @@ app.controller('HomeController',
         $scope.runConversion = function() {
             console.log("runConversion called");
             converting = true;
-            while (converting === true) { //add something to determine whether the conversion is complete
+            converter.convert();
 
-                //find a clean, non-blocking way to pause here.
+            console.log(JSON.stringify(converter.dfa));
 
-                $scope.stepForward();
-            }
+            syncDFA();
+
+            // while (converting === true) { //add something to determine whether the conversion is complete
+            //     //find a clean, non-blocking way to pause here.
+            //     $scope.stepForward();
+            // }
         }
 
         /**

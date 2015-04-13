@@ -12,12 +12,8 @@
 	padding: 10px;
 }
 
-#NFA {
+#NFA, #DFA {
 	min-height: 500px;
-}
-
-#NFA svg {
-	margin: 30px auto 0px auto;
 }
 
 .alert p {

@@ -19,7 +19,8 @@ app.controller('HomeController',
         var DFA = null; // haven't added the DFA class yet
         var NFAVisual = null; // initialized in initializeNFA()
         var DFAVisual = null; // initialized in initializeDFA()
-        var convertinging = false; // used in runConversion() and pauseConversion()
+        var converter = new Converter();
+        var converting = false; // used in runConversion() and pauseConversion()
 
         /**
          * called once the div with id "NFA" has been initialized. 
@@ -31,20 +32,23 @@ app.controller('HomeController',
          */
         $scope.initializeNFA = function() {
 
-            //extract the width and height of the div.
+            // Visual
             var width = $("#NFA").innerWidth(),
                 height = $("#NFA").parent().innerHeight();
 
-            //create instance of the ForceGraph class in the
-            //div with id "NFA".
             NFAVisual = new ForceGraph("#NFA", width, height);
 
-            $scope.sampleNFA1();
+            // Actual
+            NFA = new FSA();
 
+            console.log(NFA);
+
+
+            $scope.sampleNFA1();
             syncNFA();
         }
 
-        $scope.sampleNFA1 = function () {
+        $scope.sampleNFA1 = function() {
             NFAVisual.removeAll();
             //add the sample NFA states
             NFAVisual.addNode("1");
@@ -88,11 +92,11 @@ app.controller('HomeController',
         $scope.sampleNFA3 = function() {
             var i;
             NFAVisual.removeAll();
-            for(i = 0; i < 15; i++) {
+            for (i = 0; i < 15; i++) {
                 NFAVisual.addNode(i.toString());
             }
-            for(i = 0; i < 14; i++) {
-                NFAVisual.addLink(i.toString(), i.toString(), (i+1).toString());
+            for (i = 0; i < 14; i++) {
+                NFAVisual.addLink(i.toString(), i.toString(), (i + 1).toString());
             }
             d3.select('#N0').classed('selected', true);
             $scope.setStartState();
@@ -114,12 +118,53 @@ app.controller('HomeController',
         /**
          * called from: $scope.addState(), $scope.addTransition(), $scope.deleteSelected()
          * 
-         * syncs the NFA states and transitions to the corresponding states and transitions
-         * in NFA         
+         * syncs the actual NFA states and transitions to the corresponding states and transitions
+         * in visual NFA         
          */
         function syncNFA() {
+
+            var i, tmp, visual = {
+                    states: new Map(),
+                    transitions: new Map()
+                },
+                actual = {
+                    states: new Map(),
+                    transitions: new Map()
+                };
+
+
+            //Convert the visual states and transitions to maps
+            visual.states.putArray(NFAVisual.getNodes(), 'id');
+            visual.transitions.putArray(NFAVisual.getLinks(), 'elementId');
+
+            //Remove any states and transitions that are not in the visual
+            for (i = 0; i < NFA.states.length; i++) {
+                console.log(NFA.states[i]);
+            }
+
+            //Convert the actual states and transitions to maps
+            actual.states.putArray(NFA.states);
+            actual.transitions.putArray(NFA.transitions);
+
+            //Add any states and transitions that are not in the actual
+            tmp = visual.states.toArray();
+            for(i = 0; i < tmp.length; i++) {
+                if(actual.states.find(tmp[i].id) === false) {
+                    NFA.states.push(tmp[i].id);
+                }
+            }
+
+            tmp = visual.transitions.toArray();
+            for(i = 0; i < tmp.length; i++) {
+                
+            }
             console.log("syncNFA called");
 
+            // console.log("NFA states", NFA.states);
+            console.log("NFA transitions", NFA.transitions.toArray());
+
+            // console.log("NFAVisual states", visual.states.toArray());
+            // console.log("NFAVisual transitions", visual.transitions.toArray());
             //Determine the states and transitions which exist in NFAVisual, but not NFA
 
             //Call addNode and addLink to syncronize for the new states and transitions.
@@ -194,7 +239,10 @@ app.controller('HomeController',
             NFAVisual.toggleClass('.selected', 'start', false);
             var id = d3.select('.selected.start').attr('id');
             NFAVisual.toggleClass('.selected.start', 'selected', false);
-            NFAVisual.setNodeProperty(id, 'fixedPosition', {"x": NFAVisual.nodeRadius*4, "y": NFAVisual.nodeRadius*4});
+            NFAVisual.setNodeProperty(id, 'fixedPosition', {
+                "x": NFAVisual.nodeRadius * 4,
+                "y": NFAVisual.nodeRadius * 4
+            });
             syncNFA();
         }
 
@@ -223,7 +271,7 @@ app.controller('HomeController',
          */
         $scope.stepBackward = function() {
             console.log("stepBackward called");
-            
+
             syncDFA();
         }
 

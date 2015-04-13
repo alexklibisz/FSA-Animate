@@ -41,9 +41,6 @@ app.controller('HomeController',
             // Actual
             NFA = new FSA();
 
-            console.log(NFA);
-
-
             $scope.sampleNFA1();
             syncNFA();
         }
@@ -66,8 +63,6 @@ app.controller('HomeController',
             $scope.setStartState();
             d3.select('#N1').classed('selected', true);
             $scope.setAcceptStates();
-            console.log(NFAVisual.getNodes());
-            console.log(NFAVisual.getLinks());
         }
 
         $scope.sampleNFA2 = function() {
@@ -122,50 +117,72 @@ app.controller('HomeController',
          * in visual NFA         
          */
         function syncNFA() {
+            console.log("syncNFA called");
 
-            var i, tmp, visual = {
-                    states: new Map(),
-                    transitions: new Map()
-                },
-                actual = {
-                    states: new Map(),
-                    transitions: new Map()
-                };
-
+            var i, j, tmp,
+                visualStates = new Map(),
+                visualTransitions = new Map()
+            actualStates = new Map(),
+                actualTransitions = new Map();
 
             //Convert the visual states and transitions to maps
-            visual.states.putArray(NFAVisual.getNodes(), 'id');
-            visual.transitions.putArray(NFAVisual.getLinks(), 'elementId');
+            visualStates.putArray(NFAVisual.getNodes(), 'id');
+            visualTransitions.putArray(NFAVisual.getLinks(), 'elementId');
 
-            //Remove any states and transitions that are not in the visual
-            for (i = 0; i < NFA.states.length; i++) {
-                console.log(NFA.states[i]);
-            }
+            // //Convert the actual states and transitions to maps
+            actualStates.putArray(NFA.states);
+            actualTransitions.putArray(NFA.transitions);
 
-            //Convert the actual states and transitions to maps
-            actual.states.putArray(NFA.states);
-            actual.transitions.putArray(NFA.transitions);
+            // console.log('>>Before:');
+            // console.log('visualStates', visualStates.toArray());
+            // console.log('visualTransitions', visualTransitions.toArray());
+            // console.log('NFA.states', JSON.stringify(NFA.states));
+            // console.log('NFA.transitions', JSON.stringify(NFA.transitions));
+            // console.log('actualStates', JSON.stringify(actualStates.contents));
+            // console.log('actualTransitions', JSON.stringify(actualTransitions.toArray()));
 
-            //Add any states and transitions that are not in the actual
-            tmp = visual.states.toArray();
-            for(i = 0; i < tmp.length; i++) {
-                if(actual.states.find(tmp[i].id) === false) {
+            //Add any states from the visual that are not in the actual
+            tmp = visualStates.toArray();
+            for (i = 0; i < tmp.length; i++) {
+                if (actualStates.find(tmp[i].id) === false) {
                     NFA.states.push(tmp[i].id);
+                    actualStates.put(tmp[i].id, tmp[i].id);
                 }
             }
 
-            tmp = visual.transitions.toArray();
-            for(i = 0; i < tmp.length; i++) {
-                
-            }
-            console.log("syncNFA called");
+            // console.log('>>After:');
+            // console.log('visualStates', visualStates.toArray());
+            // console.log('visualTransitions', visualTransitions.toArray());
+            // console.log('NFA.states', JSON.stringify(NFA.states));
+            // console.log('NFA.transitions', JSON.stringify(NFA.transitions));
+            // console.log('actualStates', JSON.stringify(actualStates.contents));
+            // console.log('actualTransitions', JSON.stringify(actualTransitions.toArray()));
 
-            // console.log("NFA states", NFA.states);
-            console.log("NFA transitions", NFA.transitions.toArray());
+            /*
+            var delta = new Map();
+            delta.put('1-b', ['2']);
+            delta.put('1-E', ['3']);
+            delta.put('2-a', ['2','3']);
+            delta.put('2-b', ['3']);
+            delta.put('3-a', ['1']);
+             */
 
-            // console.log("NFAVisual states", visual.states.toArray());
-            // console.log("NFAVisual transitions", visual.transitions.toArray());
-            //Determine the states and transitions which exist in NFAVisual, but not NFA
+            //Add any transitions from the visual that are not in the actual
+            // tmp = visual.transitions.toArray();
+            // for (i = 0; i < tmp.length; i++) {
+            //     var sourceState = (tmp[i].elementId.split('-'))[1],
+            //         symbols = tmp[i].id.split(','),
+            //         key = '',
+            //         value;
+            //     for (j = 0; j < symbols.length; j++) {
+            //         key = [sourceState, symbols[j]].join('-');
+            //         value = actual.transitions.find(key);
+            //         if (!value) {
+
+            //         }
+            //     }
+            // }
+
 
             //Call addNode and addLink to syncronize for the new states and transitions.
         }

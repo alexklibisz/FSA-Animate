@@ -63,6 +63,9 @@ app.controller('HomeController',
             $scope.setStartState();
             d3.select('#N1').classed('selected', true);
             $scope.setAcceptStates();
+
+            console.log(NFAVisual.getNodes());
+            console.log(NFAVisual.getLinks());
         }
 
         $scope.sampleNFA2 = function() {

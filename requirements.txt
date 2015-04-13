@@ -5,6 +5,10 @@ To do:
 - add option to shorten a transition (i.e. start to first node)
 - add option to make a straight transition if there is no other transition going the opposite way
 - mark a state as accept state
+- deselect a node after marking it as the start node.
+- isolate the id "clean-up" to the controller, so that the id passed to the addNode and addLink functions isn't modified beyond its initial value.
+- optimize some layout parameters (to make simple, example layouts look better) example: decrease node distance as number of links decreases.
+
 
 - input an NFA as JSON
-- optimize some layout parameters (to make simple, example layouts look better) example: decrease node distance as number of nodes increases.
+- rotating text actually just flips each character upside down

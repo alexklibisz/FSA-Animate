@@ -60,6 +60,7 @@ app.controller('HomeController',
 
             d3.select('#N1').classed('selected', true);
             $scope.setStartState();
+            d3.select('#N1').classed('selected', true);
             $scope.setAcceptStates();
             console.log(NFAVisual.getNodes());
             console.log(NFAVisual.getLinks());
@@ -82,9 +83,19 @@ app.controller('HomeController',
             d3.select('#N1').classed('selected', false);
             d3.select('#N4').classed('selected', true);
             $scope.setAcceptStates();
+        }
 
-            console.log(NFAVisual.getNodes());
-            console.log(NFAVisual.getLinks());
+        $scope.sampleNFA3 = function() {
+            var i;
+            NFAVisual.removeAll();
+            for(i = 0; i < 15; i++) {
+                NFAVisual.addNode(i.toString());
+            }
+            for(i = 0; i < 14; i++) {
+                NFAVisual.addLink(i.toString(), i.toString(), (i+1).toString());
+            }
+            d3.select('#N0').classed('selected', true);
+            $scope.setStartState();
 
         }
 
@@ -161,6 +172,7 @@ app.controller('HomeController',
             while (target.trim().length === 0) {
                 target = prompt('(3/3): Target state?', '');
             }
+
             NFAVisual.addLink(symbols, source, target);
             syncNFA();
         }
@@ -181,13 +193,14 @@ app.controller('HomeController',
         $scope.setStartState = function() {
             NFAVisual.toggleClass('.selected', 'start', false);
             var id = d3.select('.selected.start').attr('id');
-            NFAVisual.setNodeProperty(id, 'fixedPosition', {"x": 80, "y": 80});
-            
+            NFAVisual.toggleClass('.selected.start', 'selected', false);
+            NFAVisual.setNodeProperty(id, 'fixedPosition', {"x": NFAVisual.nodeRadius*4, "y": NFAVisual.nodeRadius*4});
             syncNFA();
         }
 
         $scope.setAcceptStates = function() {
             NFAVisual.toggleClass('.selected', 'accept', true);
+            NFAVisual.toggleClass('.selected.accept', 'selected', true);
             syncNFA();
         }
 

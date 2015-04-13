@@ -32,8 +32,8 @@ app.controller('HomeController',
         $scope.initializeNFA = function() {
 
             //extract the width and height of the div.
-            var width = $("#NFA").innerWidth() - 30,
-                height = $("#NFA").parent().innerHeight() -30;
+            var width = $("#NFA").innerWidth(),
+                height = $("#NFA").parent().innerHeight();
 
             //create instance of the ForceGraph class in the
             //div with id "NFA".
@@ -47,10 +47,9 @@ app.controller('HomeController',
         $scope.sampleNFA1 = function () {
             NFAVisual.removeAll();
             //add the sample NFA states
-            // NFAVisual.addNode("start");
+            NFAVisual.addNode("1");
             NFAVisual.addNode("2");
             NFAVisual.addNode("3");
-            NFAVisual.addNode("1");
 
             //add the sample NFA transitions
             NFAVisual.addLink("E", "1", "3");
@@ -62,6 +61,8 @@ app.controller('HomeController',
             d3.select('#N1').classed('selected', true);
             $scope.setStartState();
             $scope.setAcceptStates();
+            console.log(NFAVisual.getNodes());
+            console.log(NFAVisual.getLinks());
         }
 
         $scope.sampleNFA2 = function() {
@@ -82,6 +83,9 @@ app.controller('HomeController',
             d3.select('#N4').classed('selected', true);
             $scope.setAcceptStates();
 
+            console.log(NFAVisual.getNodes());
+            console.log(NFAVisual.getLinks());
+
         }
 
         /**
@@ -89,8 +93,8 @@ app.controller('HomeController',
          */
         $scope.initializeDFA = function() {
             //extract the width and height of the div.
-            var width = $("#NFA").innerWidth() - 30,
-                height = $("#NFA").parent().innerHeight() - 30;
+            var width = $("#NFA").innerWidth(),
+                height = $("#NFA").parent().innerHeight();
 
             DFAVisual = new ForceGraph("#DFA", width, height);
 
@@ -128,7 +132,7 @@ app.controller('HomeController',
          */
         $scope.addState = function() {
             var id = '';
-            while (id.trim().length === 0 || name.trim().length > 3) {
+            while (id.trim().length === 0 || id.trim().length > 3) {
                 id = prompt('State Id? (1 to 3 characters)', '');
             }
             NFAVisual.addNode(id);
@@ -148,8 +152,8 @@ app.controller('HomeController',
             var symbols = '',
                 source = '',
                 target = '';
-            while (name.trim().length === 0) {
-                name = prompt('(1/3): Symbols? (Separated by commas)', '');
+            while (symbols.trim().length === 0) {
+                symbols = prompt('(1/3): Symbols? (Separated by commas)', '');
             }
             while (source.trim().length === 0) {
                 source = prompt('(2/3): Source state?', '');
@@ -157,7 +161,7 @@ app.controller('HomeController',
             while (target.trim().length === 0) {
                 target = prompt('(3/3): Target state?', '');
             }
-            NFAVisual.addLink(name, source, target);
+            NFAVisual.addLink(symbols, source, target);
             syncNFA();
         }
 
@@ -176,7 +180,9 @@ app.controller('HomeController',
 
         $scope.setStartState = function() {
             NFAVisual.toggleClass('.selected', 'start', false);
-            NFAVisual.lockNode(d3.select('.selected.start').attr('id'));
+            var id = d3.select('.selected.start').attr('id');
+            NFAVisual.setNodeProperty(id, 'fixedPosition', {"x": 80, "y": 80});
+            
             syncNFA();
         }
 
@@ -204,6 +210,7 @@ app.controller('HomeController',
          */
         $scope.stepBackward = function() {
             console.log("stepBackward called");
+            
             syncDFA();
         }
 

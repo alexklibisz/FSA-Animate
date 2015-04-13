@@ -32,7 +32,7 @@ function FSA(states, alphabet, transitions, startState, finalStates) {
         this.alphabet = [];             /* changed from {} to []. We just need to be able to
                                            iterate through a list of possible symbols */
         this.transitions = new Map();
-        this.startState = undefined;           /* a state ID should always be represented as
+        this.startState = [];           /* a state ID should always be represented as
                                            a sorted array of integers. */
         this.finalStates = [];          /* In accordance with the above definition, 
                                            the set of finalStates should always be
@@ -54,21 +54,35 @@ function FSA(states, alphabet, transitions, startState, finalStates) {
 /*
    power_set(states, inc_null)
 
-   *states*  List of strings which represent state IDs
-   *inc_null*  If true, the returned list includes an empty
-     list as an element.
-   
-   RETURN VALUE.  Returns a list of strings of comma separated
-     state IDs. This list is the power set of *states*.
+   Computes the power set of an ARRAY of states.
+
+   ***IMPORTANT***
+   power_set() expects the input to be a set of 
+   NFA states, so it just uses the first element of
+   each state "array" as the label. This means that
+   your labels (or IDs) should have one element. The
+   multi-element IDs are reserved for the DFA.
+   (e.g.: <states> = [[1],[2]]
+      ==> Return value is [[],[1],[2],[1,2]] )
+
+   Returns an array containing the power set.
+   This set will contain a state without a label (a state
+   with label []) if inc_null is set to true. This is
+   the default behavior.
 */
 
 FSA.prototype.power_set = function (states, inc_null) {
-  var powerset = states.slice(0); // start with the list of states
+  var flat_states = [];
+  var powerset = states.slice(0); // creates list of singletons
   var i, iter;
   var tmp_list; // holds a list for processing
 
   if (!states) return [];
   if (arguments.length === 1) inc_null = true;
+
+  /* flatten the NFA array and store in flat_states */
+  for (i = 0; i < states.length; i++)
+    flat_states.push(states[i][0]);
 
   /* While it is possible to construct unique combinations
      by adding to the elements of powerset from the elements of
@@ -80,26 +94,26 @@ FSA.prototype.power_set = function (states, inc_null) {
 
   iter = 0;  // the index of the powerset elem under consideration
   while (iter < powerset.length) {
-    /* iterate through states, looking for an element of
-       states that can be added to powerset[iter] to form a
+    /* iterate through flat_states, looking for an element of
+       flat_states that can be added to powerset[iter] to form a
        unique combination. This is true when flat_states[i] is
        greater than the largest element of powerset[iter], which
        is always the last element of powerset[iter]. This
        guarantees that every list added to powerset is a unique
        combination, where the permutation is the one in which
        the elements are ordered least to greatest. */
-    for (i = 0; i < states.length; i++) {
-      var pset_list = powerset[iter].split(',');
-      if (states[i] > pset_list[pset_list.length-1]) {
-        pset_list.push(states[i]);
-        powerset.push(pset_list.join(','));
+    for (i = 0; i < flat_states.length; i++) {
+      if (flat_states[i] > powerset[iter][powerset[iter].length-1]) {
+        tmp_list = powerset[iter].slice(0);
+        tmp_list.push(flat_states[i]);
+        powerset.push(tmp_list);
       }
     }
     iter++;
   }
 
   // add the null set if requested
-  if (inc_null) powerset.unshift('');
+  if (inc_null) powerset.unshift([]);
 
   return powerset;
 };
@@ -117,10 +131,9 @@ FSA.prototype.print = function() {
 
 /**
   epsilon_closure(states)
-  
-  *states* is an array of state IDs. (e.g., states = ['1','2','3'])
+    <states> is an ARRAY of states for which one wants to compute 
+    the epsilon closure. (i.e., states = [[1],[2],[3]]).
 */
-
 FSA.prototype.epsilon_closure = function(states) {
   if (!(states instanceof Array)) {
     console.err("epsilon_closure called without an Array argument.");
@@ -135,12 +148,11 @@ FSA.prototype.epsilon_closure = function(states) {
     /* add all states reachable on an epsilon transition to the queue
        and the list of eclosed states */
     var src = queue.data.shift();
-    var dst = delta.find(src+'-E');
-    if (dst) {
-      for (var i = 0; i < dst.length; i++) {
-        if (eclosed_states.insert(dst[i]))
-          queue.insert(dst[i]);
-      }
+    var dst = delta.find([src, 'E']);
+
+    for (var i = 0; i < dst.length; i++) {
+      if (eclosed_states.insert(dst[i]))
+        queue.insert(dst[i]);
     }
   }
 
@@ -159,37 +171,34 @@ FSA.prototype.epsilon_closure = function(states) {
   <states> on input <symb>.
 */
 
-/**
-  eclosed_transitions(states, symb)
-
-  *states* is an array of state IDs from the NFA.
-  *symb* is the symbol string on which the transition takes place.
-
-  RETURN VALUE.  Returns an array of states similar to the input
-  *states*. The output set of states represents the epsilon-closed 
-  set of states reachable from *states* on input *symb*.
-*/
-
 FSA.prototype.eclosed_transitions = function (states, symb) {
   var i, j;
   var trans_set = new Set();
   var trans_array;
   var post_eclose;
+  var output_states = [];   // flattened output array
 
-  /* find the set of states reachable from *states* on *symb* */
+  /* we're expecting a one dimensional array of integers,
+     so we need to expand it to a two dim array of singletons.
+     At the same time, we'll find the set of states reachable
+     from <states> on <symb> */
   for (i = 0; i < states.length; i++) {
-    trans_array = this.transitions.find(states[i]+'-'+symb);
-    if (trans_array) {
-      for (j = 0; j < trans_array.length; j++)
-        trans_set.insert(trans_array[j]);
-    }
+    trans_array = this.transitions.find([[states[i]],symb]);
+    for (j = 0; j < trans_array.length; j++)
+      trans_set.insert(trans_array[j]);
   }
 
-  /* calculate the epsilon closure of these states */
+  // calculate the epsilon closure of these states
   post_eclose = this.epsilon_closure(trans_set.toArray()).toArray();
 
-  post_eclose.sort();
-  return post_eclose;
+  /* the caller is expecting a one dimensional array of integers, so
+     we need to flatten the array... */
+  for (i = 0; i < post_eclose.length; i++) {
+    output_states.push(post_eclose[i][0]);
+  }
+
+  output_states.sort(function (a,b) {return a-b});
+  return output_states;
 };
 
 /**

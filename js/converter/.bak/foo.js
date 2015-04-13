@@ -30,11 +30,11 @@ console.log("Goes to "+transition.length+" states.");
 
 var set = new Set();
 
-if (set.insert('1,2'))
+if (set.insert([1,2]))
   console.log("insert successful");
-if (set.insert('3,4'))
+if (set.insert([3,4]))
   console.log("insert successful");
-if (set.insert('1,5'))
+if (set.insert([1,5]))
   console.log("insert successful");
 
 var vals = set.values();
@@ -42,9 +42,9 @@ console.log(vals);
 
 var set2 = new Set();
 
-set2.insert('3,4');
-set2.insert('1,2');
-set2.insert('1,5');
+set2.insert([3,4]);
+set2.insert([1,2]);
+set2.insert([5,2]);
 
 console.log(set2.values());
 
@@ -60,18 +60,11 @@ if (set3.equals(set4))
 else console.log("sets 3 and 4 are not equal");
 
 console.log(set2.values());
-set2.insert('5,2');
+set2.insert([5,2]);
 console.log(set2.values());
-set2.insert('1,3');
+set2.insert([1,3]);
 console.log(set2.values());
-set2.remove('5,2');
+set2.remove([5,2]);
 console.log(set2.values());
-set2.remove('1,3');
-console.log(set2.values());
-
-if (set2.insert('1,5'))
-  console.log("successfully inserted '1,5'");
-else
-  console.log("could not insert '1,5'");
-
+set2.remove([1,3]);
 console.log(set2.values());

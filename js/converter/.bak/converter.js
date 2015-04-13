@@ -62,18 +62,20 @@ converter.prototype.convert = function() {
   var finalStates = [];   // undefined
 
   // flatten initState array
-  initState = initState.join(',');
+  for (i = 0; i < initState; i++) {
+    tmp_array.push(initState[i][0]);
+  }
+  initState = tmp_array;
 
   // define delta's 'null', or 'error', state: loop back on all symbols
   for (i = 0; i < sigma.length; i++) {
-    delta.put('-'+sigma[i], ['']);
+    delta.put([[], sigma[i]], [[]]);
   }
 
   // compute finalStates
   for (i = 0; i < states.length; i++) {
     for (j = 0; j < this.nfa.finalStates.length; j++) {
-      tmp_array = states[i].split(',');
-      if (tmp_array.indexOf(this.nfa.finalStates[j]) >= 0) {
+      if (states[i].indexOf(this.nfa.finalStates[j][0]) !== -1) {
         finalStates.push(states[i]);
         break;
       }
@@ -82,10 +84,8 @@ converter.prototype.convert = function() {
 
   /* begin looping through the states in the DFA to add transitions */
   for (i = 0; i < states.length; i++) {
-    for (j = 0; j < sigma.length; j++) {
-      tmp_array = this.nfa.eclosed_transitions(states[i],sigma[j]);
-      delta.put(states[i]+'-'+sigma[j], tmp_array.sort().join(','));
-    }
+    for (j = 0; j < sigma.length; j++)
+      delta.put([states[i],sigma[j]], this.nfa.eclosed_transitions(states[i],sigma[j]));
   }
 
   this.dfa = new FSA(states, sigma, delta, initState, finalStates);

@@ -122,10 +122,10 @@ app.controller('HomeController',
         function syncNFA() {
             console.log("syncNFA called");
 
-            var i, j, tmp,
+            var i, j, tmp, transition,
                 visualStates = new Map(),
-                visualTransitions = new Map()
-            actualStates = new Map(),
+                visualTransitions = new Map(),
+                actualStates = new Map(),
                 actualTransitions = new Map();
 
             //Convert the visual states and transitions to maps
@@ -136,14 +136,6 @@ app.controller('HomeController',
             actualStates.putArray(NFA.states);
             actualTransitions.putArray(NFA.transitions);
 
-            // console.log('>>Before:');
-            // console.log('visualStates', visualStates.toArray());
-            // console.log('visualTransitions', visualTransitions.toArray());
-            // console.log('NFA.states', JSON.stringify(NFA.states));
-            // console.log('NFA.transitions', JSON.stringify(NFA.transitions));
-            // console.log('actualStates', JSON.stringify(actualStates.contents));
-            // console.log('actualTransitions', JSON.stringify(actualTransitions.toArray()));
-
             //Add any states from the visual that are not in the actual
             tmp = visualStates.toArray();
             for (i = 0; i < tmp.length; i++) {
@@ -153,41 +145,26 @@ app.controller('HomeController',
                 }
             }
 
-            // console.log('>>After:');
-            // console.log('visualStates', visualStates.toArray());
-            // console.log('visualTransitions', visualTransitions.toArray());
-            // console.log('NFA.states', JSON.stringify(NFA.states));
-            // console.log('NFA.transitions', JSON.stringify(NFA.transitions));
-            // console.log('actualStates', JSON.stringify(actualStates.contents));
-            // console.log('actualTransitions', JSON.stringify(actualTransitions.toArray()));
-
-            /*
-            var delta = new Map();
-            delta.put('1-b', ['2']);
-            delta.put('1-E', ['3']);
-            delta.put('2-a', ['2','3']);
-            delta.put('2-b', ['3']);
-            delta.put('3-a', ['1']);
-             */
-
             //Add any transitions from the visual that are not in the actual
-            // tmp = visual.transitions.toArray();
-            // for (i = 0; i < tmp.length; i++) {
-            //     var sourceState = (tmp[i].elementId.split('-'))[1],
-            //         symbols = tmp[i].id.split(','),
-            //         key = '',
-            //         value;
-            //     for (j = 0; j < symbols.length; j++) {
-            //         key = [sourceState, symbols[j]].join('-');
-            //         value = actual.transitions.find(key);
-            //         if (!value) {
+            tmp = visualTransitions.toArray();
+            for (i = 0; i < tmp.length; i++) {
+                var sourceState = (tmp[i].id.split('-'))[0],
+                    targetState = (tmp[i].id.split('-'))[1],
+                    symbols = (tmp[i].label.split(','));
 
-            //         }
-            //     }
-            // }
-
-
-            //Call addNode and addLink to syncronize for the new states and transitions.
+                for (j = 0; j < symbols.length; j++) {
+                    key = [sourceState, symbols[j]].join('-');
+                    transition = actualTransitions.find(key);
+                    if (!actualTransitions.find(key)) {
+                        actualTransitions.put(key, [targetState]);
+                        NFA.transitions.put(key, [targetState]);
+                    } else if(transition.join(',').indexOf(targetState + ',') === -1){
+                        targetState = [targetState].concat(transition).sort();
+                        actualTransitions.put(key, targetState);
+                        NFA.transitions.put(key, targetState);
+                    }
+                }
+            }
         }
 
         /** 

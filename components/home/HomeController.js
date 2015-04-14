@@ -4,12 +4,11 @@ app.controller('HomeController',
         /**
          * declare variables shared within the HomeController.
          */
-        var NFA = null; // haven't added the DFA class yet
-        var DFA = null; // haven't added the DFA class yet
-        var NFAVisual = null; // initialized in initializeNFA()
-        var DFAVisual = null; // initialized in initializeDFA()
-        var converter = null; // initialized in initializeNFA()
-        var converting = false; // used in runConversion() and pauseConversion()
+        var NFA = null,
+            NFAVisual = null,
+            DFAVisual = null,
+            converter = new Converter(),
+            converting = false;
 
         /**
          * called once the div with id "NFA" has been initialized. 
@@ -20,16 +19,12 @@ app.controller('HomeController',
          * Then applies some sample states and transitions.
          */
         $scope.initializeNFA = function() {
-
-            // Visual
             var width = $("#NFA").innerWidth(),
                 height = $("#NFA").parent().innerHeight();
-
             NFAVisual = new ForceGraph("#NFA", width, height);
 
-            // Actual and converter
             NFA = new FSA();
-            converter = new Converter(NFA);
+            converter.nfa = NFA;
 
             $scope.sampleNFA1();
             syncNFA();
@@ -48,68 +43,13 @@ app.controller('HomeController',
             syncDFA();
         }
 
-
-        $scope.sampleNFA1 = function() {
-            NFAVisual.removeAll();
-            //add the sample NFA states
-            NFAVisual.addNode("1");
-            NFAVisual.addNode("2");
-            NFAVisual.addNode("3");
-
-            //add the sample NFA transitions
-            NFAVisual.addLink("E", "1", "3");
-            NFAVisual.addLink("a,b", "2", "3");
-            NFAVisual.addLink("a", "3", "1");
-            NFAVisual.addLink("a", "2", "2");
-            NFAVisual.addLink("b", "1", "2");
-
-            d3.select('#N1').classed('selected', true);
-            $scope.setStartState();
-            d3.select('#N1').classed('selected', true);
-            $scope.setAcceptStates();
-
-            console.log(NFAVisual.getNodes());
-            console.log(NFAVisual.getLinks());
-        }
-
-        $scope.sampleNFA2 = function() {
-            NFAVisual.removeAll();
-            NFAVisual.addNode("1");
-            NFAVisual.addNode("2");
-            NFAVisual.addNode("3");
-            NFAVisual.addNode("4");
-
-            NFAVisual.addLink("0,1", "1", "1");
-            NFAVisual.addLink("1", "1", "2");
-            NFAVisual.addLink("0,1", "2", "3");
-            NFAVisual.addLink("0,1", "3", "4");
-
-            d3.select('#N1').classed('selected', true);
-            $scope.setStartState();
-            d3.select('#N1').classed('selected', false);
-            d3.select('#N4').classed('selected', true);
-            $scope.setAcceptStates();
-        }
-
-        $scope.sampleNFA3 = function() {
-            var i;
-            NFAVisual.removeAll();
-            for (i = 0; i < 15; i++) {
-                NFAVisual.addNode(i.toString());
-            }
-            for (i = 0; i < 14; i++) {
-                NFAVisual.addLink(i.toString(), i.toString(), (i + 1).toString());
-            }
-            d3.select('#N0').classed('selected', true);
-            $scope.setStartState();
-
-        }
-
         /**
          * Clears the NFA states array and transitions map and re-creates them
          * from the current NFAVisual nodes and links. 
+         *
+         * Finds the start and accept states and sets them in the NFA object.
          * 
-         * This is admittedly a somewhat wasteful implementation, as it completely
+         * This is admittedly a wasteful implementation, as it completely
          * re-creates the array and map on every call.
          */
         function syncNFA() {
@@ -127,7 +67,6 @@ app.controller('HomeController',
                 var sourceState = (visualTransitions[i].id.split('-'))[0],
                     targetState = (visualTransitions[i].id.split('-'))[1],
                     symbols = (visualTransitions[i].label.split(','));
-                console.log(sourceState, targetState, symbols);
 
                 for (j = 0; j < symbols.length; j++) {
                     key = [sourceState, symbols[j]].join('-');
@@ -145,38 +84,49 @@ app.controller('HomeController',
             });
             // Clear and specifcy the accept states.
             NFA.finalStates = [];
-            d3.selectAll('.accept').each(function(d,i) {
+            d3.selectAll('.accept').each(function(d, i) {
                 NFA.finalStates.push(d.id);
             });
-
-
-            console.log('NFA.states', JSON.stringify(NFA.states));
-            console.log('NFA.transitions', JSON.stringify(NFA.transitions));
-            console.log('NFA.startState', NFA.startState);
-            console.log('NFA.finalStates', NFA.finalStates);
         }
 
         /** 
-         * 
+         * Adds any states that exist in the DFA but not in the DFAVisual to
+         * the DFAVisual.
+         * Sets the start and accept states to be equal.
          */
         function syncDFA() {
-            console.log("syncDFA called");
+            if (converter.dfa === null || converter.dfa === undefined) return;
+
+            var i, tmp, visualStates = new Map(),
+                visualTransitions = new Map();
 
             //Add any states that exist in DFA and not in DFAVisual to DFAVisual
-            
+            visualStates.putArray(DFAVisual.getNodes(), 'id');
+            for (i = 0; i < converter.dfa.states.length; i++) {
+                var label = converter.dfa.states[i],
+                    state = visualStates.find(label);
+                if (!state) {
+                    visualStates.put(label, label);
+                    DFAVisual.addNode(label);
+                }
+            }
+
             //Add any transitions that exist in DFA and not in DFAVisual to DFAVisual
-            
+            visualTransitions.putArray(DFAVisual.getLinks(), 'id');
+            tmp = converter.dfa.transitions.toArray();
+            for (i = 0; i < tmp.length; i++) {
+                var label = tmp.transitions[i];
+                console.log('transition label', label);
+            }
+
             //Make sure that DFAVisual's start state is the same as DFA's
-            
+
             //Make sure that DFAVisual's accpet states are the same as DFA's
         }
 
         /**
-         * called when a user clicks the "Add State" button.
-         *
          * prompts the user for a name for this state and calls
          * addNode for the NFAVisual object.
-         * 
          */
         $scope.addState = function() {
             var id = '';
@@ -188,13 +138,7 @@ app.controller('HomeController',
         }
 
         /**
-         * called when a user clicks the "Add Transition" button.
-         *
          * prompts the user for a name, source, and target transition.
-         *
-         * right now it doesn't error check if the user gives bogus
-         * input. I'll have to implement that to make sure the conversion
-         * isn't corrupted.
          */
         $scope.addTransition = function() {
             var symbols = '',
@@ -215,8 +159,6 @@ app.controller('HomeController',
         }
 
         /**
-         * called when a user clicks the "Delete Selected" button.
-         * 
          * deletes any nodes elements that have the selected
          * class and deletes any corresponding links.
          */
@@ -227,6 +169,11 @@ app.controller('HomeController',
             syncNFA();
         }
 
+        /**
+         * Adds the 'start' class to any nodes of the 'selected' class.
+         * Deselects the node.
+         * Sets the fixedPosition property for the node to lock it in place.
+         */
         $scope.setStartState = function() {
             NFAVisual.toggleClass('.selected', 'start', false);
             var id = d3.select('.selected.start').attr('id');
@@ -244,11 +191,7 @@ app.controller('HomeController',
             syncNFA();
         }
 
-
-
         /**
-         * called when a user clicks the "Step Forward" button.
-         *
          * steps forward in the conversion from NFA to DFA.
          */
         $scope.stepForward = function() {
@@ -257,8 +200,6 @@ app.controller('HomeController',
         }
 
         /**
-         * called when a user clicks the "Step Backward" button.
-         *
          * steps backward in the conversion from NFA to DFA.
          */
         $scope.stepBackward = function() {
@@ -268,35 +209,81 @@ app.controller('HomeController',
         }
 
         /**
-         * called when a user clicks the "Run Conversion" button.
-         *
          * runs the conversion from NFA to DFA until 
          * at 1 second intervals until pauseConversion is called.
          */
         $scope.runConversion = function() {
             console.log("runConversion called");
             converting = true;
-            converter.convert();
 
-            console.log(JSON.stringify(converter.dfa));
+            console.log('initial nfa:', JSON.stringify(converter.nfa));
+            converter.convert();
+            console.log('resulting dfa:', JSON.stringify(converter.dfa));
 
             syncDFA();
-
-            // while (converting === true) { //add something to determine whether the conversion is complete
-            //     //find a clean, non-blocking way to pause here.
-            //     $scope.stepForward();
-            // }
         }
 
         /**
-         * called when a user clicks the "Pause Conversion" button.
-         *
          * pauses the conversion from NFA to DFA.
          */
         $scope.pauseConversion = function() {
             console.log("pauseConversion called");
             converting = false;
             syncDFA();
+        }
+
+        $scope.sampleNFA1 = function() {
+            NFAVisual.reset();
+            //add the sample NFA states
+            NFAVisual.addNode("1");
+            NFAVisual.addNode("2");
+            NFAVisual.addNode("3");
+
+            //add the sample NFA transitions
+            NFAVisual.addLink("E", "1", "3");
+            NFAVisual.addLink("a,b", "2", "3");
+            NFAVisual.addLink("a", "3", "1");
+            NFAVisual.addLink("a", "2", "2");
+            NFAVisual.addLink("b", "1", "2");
+
+            d3.select('#N1').classed('selected', true);
+            $scope.setStartState();
+            d3.select('#N1').classed('selected', true);
+            $scope.setAcceptStates();
+        }
+
+        $scope.sampleNFA2 = function() {
+            NFAVisual.reset();
+            NFAVisual.addNode("1");
+            NFAVisual.addNode("2");
+            NFAVisual.addNode("3");
+            NFAVisual.addNode("4");
+
+            NFAVisual.addLink("0,1", "1", "1");
+            NFAVisual.addLink("1", "1", "2");
+            NFAVisual.addLink("0,1", "2", "3");
+            NFAVisual.addLink("0,1", "3", "4");
+
+            d3.select('#N1').classed('selected', true);
+            $scope.setStartState();
+            d3.select('#N1').classed('selected', false);
+            d3.select('#N4').classed('selected', true);
+            $scope.setAcceptStates();
+        }
+
+        $scope.sampleNFA3 = function() {
+            var i;
+            NFAVisual.reset();
+            for (i = 0; i < 7; i++) {
+                NFAVisual.addNode(i.toString());
+            }
+            for (i = 0; i < 6; i++) {
+                NFAVisual.addLink(i.toString(), i.toString(), (i + 1).toString());
+            }
+            d3.select('#N0').classed('selected', true);
+            $scope.setStartState();
+            d3.select("#N6").classed('selected', true);
+            $scope.setAcceptStates();
         }
 
     });

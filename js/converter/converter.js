@@ -66,7 +66,7 @@ converter.prototype.convert = function() {
 
   // define delta's 'null', or 'error', state: loop back on all symbols
   for (i = 0; i < sigma.length; i++) {
-    delta.put('-'+sigma[i], ['']);
+    delta.put('?-'+sigma[i], '?');
   }
 
   // compute finalStates
@@ -81,10 +81,17 @@ converter.prototype.convert = function() {
   }
 
   /* begin looping through the states in the DFA to add transitions */
-  for (i = 0; i < states.length; i++) {
+  for (i = 1; i < states.length; i++) {
     for (j = 0; j < sigma.length; j++) {
       tmp_array = this.nfa.eclosed_transitions(states[i],sigma[j]);
+      console.log("eclosed_transitions = ", tmp_array);
+      if (tmp_array.length === 0) {
+        delta.put(states[i]+'-'+sigma[j], '?');
+        console.log("adding transition: "+states[i]+'-'+sigma[j]+" --> ?");
+        continue;
+      }
       delta.put(states[i]+'-'+sigma[j], tmp_array.sort().join(','));
+      console.log("adding transition: "+states[i]+'-'+sigma[j]+' --> '+tmp_array.sort().join(','));
     }
   }
 

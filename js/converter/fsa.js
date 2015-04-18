@@ -99,7 +99,7 @@ FSA.prototype.power_set = function (states, inc_null) {
   }
 
   // add the null set if requested
-  if (inc_null) powerset.unshift('');
+  if (inc_null) powerset.unshift('?');
 
   return powerset;
 };

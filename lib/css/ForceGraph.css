@@ -28,8 +28,6 @@
   fill: #99FF66 !important;
 }
 
-
-
 .ForceGraph g.selected.accept circle {
   fill: #33CC33 !important;
 }
@@ -41,14 +39,14 @@
   cursor: pointer;
 }
 
-.ForceGraph text {
+.ForceGraph .link text {
   fill: black;
   font-weight: bold;
   font-size: 1.6em;
   stroke: white;
   stroke-width: 1px;
-  
 }
+
 
 .ForceGraph .link textPath {
   text-anchor: middle;

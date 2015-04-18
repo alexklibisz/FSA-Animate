@@ -1,24 +1,3 @@
-/**
- * Protected variables.
- * Can be accessed by any functions in this script,
- * but can't be accessed without a getter function 
- * externally.
- *
- * Don't use this for now as it turns things into 
- * singletons that we don't necessarily want to be
- * singletons.
- */
-
-/**
- * Constructor for FSA class instances.
- * Any public variables for an FSA instance 
- * should be declared here.
- *
- * Giving more descriptive names for the
- * formal (Q, sigma, delta, q_o, F)
- * 
- */
-
 function FSA(states, alphabet, transitions, startState, finalStates) {
     if (arguments.length !== 5) {
         this.states = [];               /* we will use this as a convenience for iterating
@@ -39,11 +18,6 @@ function FSA(states, alphabet, transitions, startState, finalStates) {
 	    this.finalStates = finalStates;
     }
 }
-
-/**
- * Class functions.
- * Available externally.
- */
 
 /*
    power_set(states, inc_null)
@@ -93,7 +67,7 @@ FSA.prototype.power_set = function (states, inc_null) {
   }
 
   // add the null set if requested
-  if (inc_null) powerset.unshift('?');
+  if (inc_null) powerset.unshift('');
 
   return powerset;
 };

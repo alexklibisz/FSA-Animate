@@ -102,9 +102,16 @@ app.controller('HomeController',
         }
 
         /** 
-         * Adds any states that exist in the DFA but not in the DFAVisual to
-         * the DFAVisual.
-         * Sets the start and accept states to be equal.
+         * Determine an appropriate number of nodes per row, horizontal difference,
+         * and vertial difference.
+         *
+         * Iteratively add states from the DFA object to the DFAVisual object in a
+         * grid pattern.
+         *
+         * Add all transitions from the DFA object to the DFAVisual object. Do not
+         * worry about duplicate transitions, as the ForceGraph handles them internally.
+         * 
+         * Update the start and accept states from the DFA object ot the DFAVisual object.
          */
         function syncDFA() {
             console.log('syncDFA called');
@@ -113,15 +120,11 @@ app.controller('HomeController',
 
             var i, tmp, label, visualStates = new Map(),
                 visualTransitions = new Map(),
-                magicNumber = 180,
+                magicNumber = 10 * DFAVisual.nodeRadius,
                 nodesPerRow = Math.floor(DFAVisual.width / magicNumber),
                 nodesPerColumn = Math.floor(DFAVisual.height / magicNumber),
                 horizontalDistance = Math.floor(DFAVisual.width / nodesPerRow),
                 verticalDistance = Math.floor(DFAVisual.height / nodesPerColumn);
-
-            console.log('nodesPerRow', nodesPerRow);
-            console.log('horizontalDistance', horizontalDistance);
-            console.log('verticalDistance', verticalDistance);
 
             //Add any states that exist in DFA and not in DFAVisual to DFAVisual
             visualStates.putArray(DFAVisual.getNodes(), 'id');
@@ -129,9 +132,9 @@ app.controller('HomeController',
                 var label = converter.dfa.states[i],
                     state = visualStates.find(label);
                 if (!state) {
-                    visualStates.put(label, label);
                     var x = horizontalDistance * (i % nodesPerRow) + 100,
                         y = verticalDistance * Math.floor(i / nodesPerRow) + 100;
+                    visualStates.put(label, label);
                     DFAVisual.addNode(label, x, y);
                 }
             }
@@ -145,7 +148,6 @@ app.controller('HomeController',
                     target = tmp[k],
                     id = [source, target].join('-'),
                     transition = visualTransitions.find(id);
-
                 //Add the transition -- ForceGraph.js handles redundancy
                 DFAVisual.addLink(label, source, target);
             }
@@ -233,15 +235,6 @@ app.controller('HomeController',
         }
 
         /**
-         * steps backward in the conversion from NFA to DFA.
-         */
-        $scope.stepBackward = function() {
-            console.log("stepBackward called");
-
-            syncDFA();
-        }
-
-        /**
          * runs the conversion from NFA to DFA until 
          * at 1 second intervals until pauseConversion is called.
          */
@@ -265,6 +258,7 @@ app.controller('HomeController',
         }
 
         $scope.sampleNFA1 = function() {
+            converter.reset();
             NFAVisual.reset();
             if (DFAVisual !== null) DFAVisual.reset();
             //add the sample NFA states
@@ -286,6 +280,7 @@ app.controller('HomeController',
         }
 
         $scope.sampleNFA2 = function() {
+            converter.reset();
             NFAVisual.reset();
             if (DFAVisual !== null) DFAVisual.reset();
             NFAVisual.addNode("1");
@@ -298,26 +293,27 @@ app.controller('HomeController',
             NFAVisual.addLink("0,1", "2", "3");
             NFAVisual.addLink("0,1", "3", "4");
 
-            d3.select('#N1').classed('selected', true);
+            d3.select('#NFA-N1').classed('selected', true);
             $scope.setStartState();
-            d3.select('#N1').classed('selected', false);
-            d3.select('#N4').classed('selected', true);
+            d3.select('#NFA-N1').classed('selected', false);
+            d3.select('#NFA-N4').classed('selected', true);
             $scope.setAcceptStates();
         }
 
         $scope.sampleNFA3 = function() {
             var i;
+            converter.reset();
             NFAVisual.reset();
             if (DFAVisual !== null) DFAVisual.reset();
-            for (i = 0; i < 7; i++) {
+            for (i = 0; i < 6; i++) {
                 NFAVisual.addNode(i.toString());
             }
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < 5; i++) {
                 NFAVisual.addLink(i.toString(), i.toString(), (i + 1).toString());
             }
-            d3.select('#N0').classed('selected', true);
+            d3.select('#NFA-N0').classed('selected', true);
             $scope.setStartState();
-            d3.select("#N6").classed('selected', true);
+            d3.select("#NFA-N5").classed('selected', true);
             $scope.setAcceptStates();
         }
 

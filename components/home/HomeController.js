@@ -42,8 +42,6 @@ app.controller('HomeController',
             DFAVisual = new ForceGraph("#DFA", width, height);
             DFAVisual.forceRenderSpeed = 1;
             DFAVisual.forceOptimize = false;
-            DFAVisual.forceDistance = 350;
-            DFAVisual.forceLinkStrength = 0;
             DFAVisual.nodeRadius = 15;
             syncDFA();
         }
@@ -58,10 +56,6 @@ app.controller('HomeController',
          * re-creates the array and map on every call. 
          */
         function syncNFA() {
-            console.log('syncDFA called');
-            // console.log('NFA', JSON.stringify(NFA));
-            // console.log('Links', JSON.stringify(NFAVisual.getLinks()));
-            
             var i, j, key, reachableStates, visualStates = NFAVisual.getNodes(),
                 visualTransitions = NFAVisual.getLinks(), tmp, alphabet;
 
@@ -151,7 +145,7 @@ app.controller('HomeController',
 
             //Make sure that DFAVisual's start state is the same as DFA's
 
-            //Make sure that DFAVisual's accpet states are the same as DFA's
+            //Make sure that DFAVisual's accept states are the same as DFA's
         }
 
         /**

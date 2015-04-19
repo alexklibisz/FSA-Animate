@@ -221,6 +221,7 @@ app.controller('HomeController',
          */
         $scope.stepForward = function() {
             console.log("stepForward called");
+            converter.stepForward();
             syncDFA();
         }
 

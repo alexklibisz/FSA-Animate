@@ -279,9 +279,9 @@ app.controller('HomeController',
             NFAVisual.addLink("a", "2", "2");
             NFAVisual.addLink("b", "1", "2");
 
-            d3.select('#N1').classed('selected', true);
+            d3.select('#NFA-N1').classed('selected', true);
             $scope.setStartState();
-            d3.select('#N1').classed('selected', true);
+            d3.select('#NFA-N1').classed('selected', true);
             $scope.setAcceptStates();
         }
 

@@ -12,12 +12,8 @@
 	padding: 10px;
 }
 
-#NFA {
+#NFA, #DFA {
 	min-height: 500px;
-}
-
-#DFA {
-	min-height: 670px;
 }
 
 .alert p {

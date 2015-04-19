@@ -10,5 +10,7 @@ To do:
 - optimize some layout parameters (to make simple, example layouts look better) example: decrease node distance as number of links decreases.
 
 
+- DFA fits all nodes in a grid
+- different color for the last transition made
 - input an NFA as JSON
 - rotating text actually just flips each character upside down

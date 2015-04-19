@@ -40,7 +40,11 @@ app.controller('HomeController',
                 height = $("#DFA").parent().innerHeight();
 
             DFAVisual = new ForceGraph("#DFA", width, height);
-
+            DFAVisual.forceRenderSpeed = 1;
+            DFAVisual.forceOptimize = false;
+            DFAVisual.forceDistance = 350;
+            DFAVisual.forceLinkStrength = 0;
+            DFAVisual.nodeRadius = 15;
             syncDFA();
         }
 
@@ -54,10 +58,14 @@ app.controller('HomeController',
          * re-creates the array and map on every call. 
          */
         function syncNFA() {
+            console.log('syncDFA called');
+            // console.log('NFA', JSON.stringify(NFA));
+            // console.log('Links', JSON.stringify(NFAVisual.getLinks()));
+            
             var i, j, key, reachableStates, visualStates = NFAVisual.getNodes(),
                 visualTransitions = NFAVisual.getLinks(), tmp, alphabet;
 
-            // Clear and recreate the states.
+            // Clear and recreate the states
             NFA.states = [];
             for (i = 0; i < visualStates.length; i++) {
                 NFA.states.push(visualStates[i].id);
@@ -82,7 +90,10 @@ app.controller('HomeController',
             // Iterate over the transitions to deduce the NFA alphabet
             alphabet = new Map();
             for(i = 0; i < visualTransitions.length; i++) {
-                tmp = visualTransitions[i].label.split(',');
+                tmp = visualTransitions[i].label;
+                if(tmp === 'E') continue;
+                tmp = tmp.replace(',E', '').replace('E,', '');
+                tmp = tmp.split(',').sort();
                 alphabet.putArray(tmp);
             }
             NFA.alphabet = alphabet.toArray().sort();
@@ -103,6 +114,10 @@ app.controller('HomeController',
          * Sets the start and accept states to be equal.
          */
         function syncDFA() {
+            console.log('syncDFA called');
+            console.log('NFA', JSON.stringify(NFA));
+            console.log('DFA', JSON.stringify(DFA));
+
             if (converter.dfa === null || converter.dfa === undefined) return;
 
             var i, tmp, label, visualStates = new Map(),
@@ -119,24 +134,20 @@ app.controller('HomeController',
                 }
             }
 
+            console.log('links', NFAVisual.getLinks());
             //Add any transitions that exist in DFA and not in DFAVisual to DFAVisual
             visualTransitions.putArray(DFAVisual.getLinks(), 'id');
             tmp = converter.dfa.transitions.contents;
-
             for(var k in tmp) {
                 var source = k.split('-')[0],
                     label = k.split('-')[1],
-                    target = tmp[k];
+                    target = tmp[k],
+                    id = [source, target].join('-'),
+                    transition = visualTransitions.find(id);
                 
-                console.log(k, tmp[k], source, label, target);
+                //Add the transition -- ForceGraph.js handles redundancy
+                DFAVisual.addLink(label, source, target);
             }
-            
-            // console.log('transitions', converter.dfa.transitions);
-            // for (i = 0; i < tmp.length; i++) {
-            //     // if(tmp === null) label = "?";
-            //     // else label = tmp;
-            //     console.log('transition label', label);
-            // }
 
             //Make sure that DFAVisual's start state is the same as DFA's
 
@@ -152,6 +163,7 @@ app.controller('HomeController',
             while (id.trim().length === 0 || id.trim().length > 3) {
                 id = prompt('State Id? (1 to 3 characters)', '');
             }
+            if(id === null) return;
             NFAVisual.addNode(id);
             syncNFA();
         }
@@ -234,7 +246,6 @@ app.controller('HomeController',
         $scope.runConversion = function() {
             console.log("runConversion called");
             converting = true;
-            
             console.log('initial nfa:', JSON.stringify(converter.nfa));
             converter.convert();
             console.log('resulting dfa:', JSON.stringify(converter.dfa));
@@ -253,6 +264,7 @@ app.controller('HomeController',
 
         $scope.sampleNFA1 = function() {
             NFAVisual.reset();
+            if(DFAVisual !== null) DFAVisual.reset();
             //add the sample NFA states
             NFAVisual.addNode("1");
             NFAVisual.addNode("2");
@@ -273,6 +285,7 @@ app.controller('HomeController',
 
         $scope.sampleNFA2 = function() {
             NFAVisual.reset();
+            if(DFAVisual !== null) DFAVisual.reset();
             NFAVisual.addNode("1");
             NFAVisual.addNode("2");
             NFAVisual.addNode("3");
@@ -293,6 +306,7 @@ app.controller('HomeController',
         $scope.sampleNFA3 = function() {
             var i;
             NFAVisual.reset();
+            if(DFAVisual !== null) DFAVisual.reset();
             for (i = 0; i < 7; i++) {
                 NFAVisual.addNode(i.toString());
             }

@@ -120,26 +120,31 @@ app.controller('HomeController',
 
             var i, tmp, label, visualStates = new Map(),
                 visualTransitions = new Map(),
-                magicNumber = 10 * DFAVisual.nodeRadius,
-                nodesPerRow = Math.floor(DFAVisual.width / magicNumber),
-                nodesPerColumn = Math.floor(DFAVisual.height / magicNumber),
-                horizontalDistance = Math.floor(DFAVisual.width / nodesPerRow),
-                verticalDistance = Math.floor(DFAVisual.height / nodesPerColumn);
+                cols = 2,
+                rows, xDist, yDist, id;
 
-            //Add any states that exist in DFA and not in DFAVisual to DFAVisual
+            if (DFAVisual.width > 500) cols = 4;
+            else if (DFAVisual.width > 200) cols = 3;
+
+            rows = Math.floor(converter.dfa.states.length / cols);
+            xDist = Math.floor(DFAVisual.width / cols);
+            yDist = Math.floor(DFAVisual.height / rows);
+
+            // Add any states that exist in DFA and not in DFAVisual to DFAVisual
             visualStates.putArray(DFAVisual.getNodes(), 'id');
             for (i = 0; i < converter.dfa.states.length; i++) {
                 var label = converter.dfa.states[i],
                     state = visualStates.find(label);
                 if (!state) {
-                    var x = horizontalDistance * (i % nodesPerRow) + 100,
-                        y = verticalDistance * Math.floor(i / nodesPerRow) + 100;
+                    var x = xDist * (i % cols) + 100,
+                        y = yDist * Math.floor(i / cols) + 100;
                     visualStates.put(label, label);
                     DFAVisual.addNode(label, x, y);
                 }
             }
 
             //Add any transitions that exist in DFA and not in DFAVisual to DFAVisual
+            //ForceGraph handles redundancy in links, so no check is necessary here.
             visualTransitions.putArray(DFAVisual.getLinks(), 'id');
             tmp = converter.dfa.transitions.contents;
             for (var k in tmp) {
@@ -148,13 +153,22 @@ app.controller('HomeController',
                     target = tmp[k],
                     id = [source, target].join('-'),
                     transition = visualTransitions.find(id);
-                //Add the transition -- ForceGraph.js handles redundancy
                 DFAVisual.addLink(label, source, target);
             }
 
-            //Make sure that DFAVisual's start state is the same as DFA's
-
-            //Make sure that DFAVisual's accept states are the same as DFA's
+            //Set DFAVisual start state
+            id = '#DFA-N' + converter.dfa.startState.replace(',', '_');
+            d3.select(id).classed('selected', true);
+            $scope.setStartState();
+            
+            //Set DFAVisual accept state
+            tmp = converter.dfa.acceptStates;
+            for(i = 0; i < tmp.length; i++) {
+                id = '#DFA-N' + tmp[i].replace(/,/g, '_');
+                d3.select(id).classed('selected', true);
+            }
+            $scope.setAcceptStates();
+            
         }
 
         /**

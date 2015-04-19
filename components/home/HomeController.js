@@ -24,7 +24,6 @@ app.controller('HomeController',
             NFAVisual = new ForceGraph("#NFA", width, height);
 
             NFA = new FSA();
-            NFA.alphabet = ['a', 'b'];
             converter.nfa = NFA;
 
             $scope.sampleNFA1();
@@ -109,20 +108,16 @@ app.controller('HomeController',
          */
         function syncDFA() {
             console.log('syncDFA called');
-            console.log('NFA', JSON.stringify(NFA));
-            console.log('DFA', JSON.stringify(DFA));
 
             if (converter.dfa === null || converter.dfa === undefined) return;
 
             var i, tmp, label, visualStates = new Map(),
                 visualTransitions = new Map(),
-                nodesPerRow = Math.floor(DFAVisual.width / 200),
-                nodesPerColumn = Math.floor(DFAVisual.height / 200),
+                magicNumber = 180,
+                nodesPerRow = Math.floor(DFAVisual.width / magicNumber),
+                nodesPerColumn = Math.floor(DFAVisual.height / magicNumber),
                 horizontalDistance = Math.floor(DFAVisual.width / nodesPerRow),
                 verticalDistance = Math.floor(DFAVisual.height / nodesPerColumn);
-
-            console.log('DFA states ', converter.dfa.states.length);
-            console.log('DFAVisual', JSON.stringify(DFAVisual));
 
             console.log('nodesPerRow', nodesPerRow);
             console.log('horizontalDistance', horizontalDistance);

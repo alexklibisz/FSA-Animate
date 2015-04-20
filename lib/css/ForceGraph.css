@@ -49,5 +49,5 @@
 
 
 .ForceGraph .link textPath {
-  text-anchor: middle;
+  text-anchor: start;
 }

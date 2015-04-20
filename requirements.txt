@@ -9,8 +9,9 @@ To do:
 - isolate the id "clean-up" to the controller, so that the id passed to the addNode and addLink functions isn't modified beyond its initial value.
 - optimize some layout parameters (to make simple, example layouts look better) example: decrease node distance as number of links decreases.
 - DFA fits all nodes in a grid
-
 - DFA start, accept states
+
+
 
 - position the labels closer to nodes so that they don't overlap
 - different color for the last transition made

@@ -157,18 +157,21 @@ app.controller('HomeController',
             }
 
             //Set DFAVisual start state
-            id = '#DFA-N' + converter.dfa.startState.replace(',', '_');
-            d3.select(id).classed('selected', true);
-            $scope.setStartState();
-            
-            //Set DFAVisual accept state
-            tmp = converter.dfa.acceptStates;
-            for(i = 0; i < tmp.length; i++) {
-                id = '#DFA-N' + tmp[i].replace(/,/g, '_');
-                d3.select(id).classed('selected', true);
+            if (converter.dfa.startState !== undefined) {
+                id = '#DFA-N' + converter.dfa.startState.replace(',', '_');
+                if(!d3.select(id).classed('start')) {
+                    d3.select(id).classed('start', true);   
+                }
             }
-            $scope.setAcceptStates();
-            
+
+            //Set DFAVisual accept state
+            // tmp = converter.dfa.acceptStates;
+            // for (i = 0; i < tmp.length; i++) {
+            //     id = '#DFA-N' + tmp[i].replace(/,/g, '_');
+            //     d3.select(id).classed('selected', true);
+            // }
+            // $scope.setAcceptStates();
+
         }
 
         /**

@@ -1,6 +1,6 @@
-#FSA-Animate
+#FSA-Animate - alexklibisz.github.io/FSA-Animate/
 
-##Animated Finite State Automata Conversions - alexklibisz.github.io/FSA-Animate/
+##Animated Finite State Automata Conversions
 
 COSC312 Spring 2015 Honors by Contract Project, Alex Klibisz, Connor Minton
 

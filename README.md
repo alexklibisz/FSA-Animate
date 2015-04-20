@@ -1,6 +1,6 @@
 #FSA-Animate
 
-##Animated finite state automata conversions
+##Animated Finite State Automata Conversions
 
 COSC312 Spring 2015 Honors by Contract Project, Alex Klibisz, Connor Minton
 
@@ -8,7 +8,7 @@ COSC312 Spring 2015 Honors by Contract Project, Alex Klibisz, Connor Minton
 
 ####Summary
 
-FSA-Animate is a tool for converting [Nondeterministic finite automaton](http://en.wikipedia.org/wiki/Nondeterministic_finite_automaton)
+FSA-Animate is a tool for converting [Nondeterministic finite automaton](http://en.wikipedia.org/wiki/Nondeterministic_finite_automaton) to [Deterministic finite automaton](http://en.wikipedia.org/wiki/Deterministic_finite_automaton) via an interactive, visual interface.
 
 ####Features
 - Create an 

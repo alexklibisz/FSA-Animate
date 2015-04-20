@@ -1,5 +1,5 @@
 app.controller('HomeController',
-    function($scope, $location) {
+    function($scope, $timeout) {
 
         /**
          * declare variables shared within the HomeController.
@@ -260,8 +260,15 @@ app.controller('HomeController',
          * steps forward in the conversion from NFA to DFA.
          */
         $scope.stepForward = function() {
-            console.log('stepForward called');
             converter.stepForward();
+            syncDFA();
+        }
+
+        /**
+         * runs the complete conversion once through
+         */
+        $scope.completeConversion = function() {
+            while(converter.stepForward());
             syncDFA();
         }
 
@@ -269,13 +276,14 @@ app.controller('HomeController',
          * runs the conversion from NFA to DFA until 
          * at 1 second intervals until pauseConversion is called.
          */
-        $scope.runConversion = function() {
-            console.log('runConversion called');
-            converting = true;
-            console.log('initial nfa:', JSON.stringify(converter.nfa));
-            converter.convert();
-            console.log('resulting dfa:', JSON.stringify(converter.dfa));
-            syncDFA();
+        $scope.incrementalConversion = function() {
+            var step = function() {
+                if(converter.stepForward()) {
+                    syncDFA();
+                    $timeout(step, 1000);
+                }
+            }
+            $timeout(step, 1000);
         }
 
         $scope.sampleNFA1 = function() {

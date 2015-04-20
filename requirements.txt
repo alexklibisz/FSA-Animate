@@ -13,10 +13,11 @@ To do:
 - position the labels closer to nodes so that they don't overlap
 - different color for the last transition made
 - ForceGraph clear function
+- textPaths on top -- didn't work but added 0.75 opacity to make it look better
 
+- run conversion at 1 second intervals
+- possibly every other transition a different color.
 
-- textPaths on top
 - input an NFA as JSON
 - rotating text actually just flips each character upside down
 - transitions to delta transition table
-- run conversion at 1 second intervals

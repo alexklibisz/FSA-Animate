@@ -129,7 +129,11 @@ app.controller('HomeController',
 
             rows = Math.floor(converter.dfa.states.length / cols);
             xDist = Math.floor(DFAVisual.width / cols);
-            yDist = Math.floor(DFAVisual.height / rows);
+            yDist = Math.floor(DFAVisual.height / (rows)),
+            xPad = 100,
+            yPad = 4 * DFAVisual.nodeRadius;
+
+            console.log(yPad);
 
             // Add any states that exist in DFA and not in DFAVisual to DFAVisual
             visualStates.putArray(DFAVisual.getNodes(), 'id');
@@ -137,10 +141,9 @@ app.controller('HomeController',
                 var label = converter.dfa.states[i],
                     state = visualStates.find(label);
                 if (!state) {
-                    var x = xDist * (i % cols) + 100,
-                        y = yDist * Math.floor(i / cols) + 80;
+                    var x = xDist * (i % cols) + xPad,
+                        y = yDist * Math.floor(i / cols) + yPad;
                     visualStates.put(label, label);
-
                     DFAVisual.addNode(label, x, y);
                 }
             }

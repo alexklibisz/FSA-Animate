@@ -240,7 +240,8 @@ app.controller('HomeController',
          */
         $scope.setStartState = function() {
             NFAVisual.toggleClass('.selected', 'start', false);
-            var id = d3.select('.selected.start').attr('id');
+            var id = d3.select('.selected.start').attr('id').replace('NFA-N', '');
+
             NFAVisual.toggleClass('.selected.start', 'selected', false);
             NFAVisual.setNodeProperty(id, 'fixedPosition', {
                 'x': NFAVisual.nodeRadius * 4,
@@ -355,13 +356,15 @@ app.controller('HomeController',
                 d3.select(d.elementId).classed('start', false);
             })
             id = '#NFA-N' + userNFA.start;
-            d3.select(id).classed('start', true);
+            d3.select(id).classed('selected', true);
+            $scope.setStartState();
             // Set the accept states
             tmp = userNFA.accept;
             for(i = 0; i < tmp.length; i++) {
                 id = '#NFA-N' + tmp[i];
                 d3.select(id).classed('accept', true);
             }
+            $scope.setAcceptStates();
             syncNFA();
         }
 

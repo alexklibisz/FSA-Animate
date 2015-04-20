@@ -94,9 +94,9 @@ app.controller('HomeController',
                 NFA.startState = d.id;
             });
             // Clear and specifcy the accept states.
-            NFA.finalStates = [];
+            NFA.acceptStates = [];
             d3.selectAll('.accept').each(function(d, i) {
-                NFA.finalStates.push(d.id);
+                NFA.acceptStates.push(d.id);
             });
         }
 
@@ -113,8 +113,6 @@ app.controller('HomeController',
          * Update the start and accept states from the DFA object ot the DFAVisual object.
          */
         function syncDFA() {
-            console.log('syncDFA called');
-
             if (converter.dfa === null || converter.dfa === undefined) return;
 
             var i, tmp, label, visualStates = new Map(),
@@ -174,12 +172,12 @@ app.controller('HomeController',
 
             //Add 'last-added' class to the last element in the links array
             tmp = DFAVisual.getLinks();
-            lastTransition = tmp[tmp.length - 1];
-            id = '#' + lastTransition.elementId;
-            d3.select('.last').classed('last', false);
-            d3.select(id).classed('last', true);
-            console.log('lastTransition', lastTransition.elementId);
-
+            if (tmp.length > 0) {
+                lastTransition = tmp[tmp.length - 1];
+                id = '#' + lastTransition.elementId;
+                d3.select('.last').classed('last', false);
+                d3.select(id).classed('last', true);
+            }
         }
 
         /**
@@ -251,9 +249,8 @@ app.controller('HomeController',
         }
 
         $scope.reset = function() {
-            converter.reset();
             NFAVisual.reset();
-            if(DFAVisual !== null) DFAVisual.reset();
+            syncNFA();
         }
 
         /**
@@ -268,7 +265,7 @@ app.controller('HomeController',
          * runs the complete conversion once through
          */
         $scope.completeConversion = function() {
-            while(converter.stepForward());
+            while (converter.stepForward());
             syncDFA();
         }
 
@@ -278,12 +275,12 @@ app.controller('HomeController',
          */
         $scope.incrementalConversion = function() {
             var step = function() {
-                if(converter.stepForward()) {
+                if (converter.stepForward()) {
                     syncDFA();
                     $timeout(step, 1000);
                 }
             }
-            $timeout(step, 1000);
+            $timeout(step, 0);
         }
 
         $scope.sampleNFA1 = function() {

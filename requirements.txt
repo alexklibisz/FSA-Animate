@@ -11,11 +11,11 @@ To do:
 - DFA fits all nodes in a grid
 - DFA start, accept states
 - position the labels closer to nodes so that they don't overlap
-
-
 - different color for the last transition made
-
 - ForceGraph clear function
+
+
+- textPaths on top
 - input an NFA as JSON
 - rotating text actually just flips each character upside down
 - transitions to delta transition table

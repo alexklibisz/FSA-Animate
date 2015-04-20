@@ -250,6 +250,12 @@ app.controller('HomeController',
             syncNFA();
         }
 
+        $scope.reset = function() {
+            converter.reset();
+            NFAVisual.reset();
+            if(DFAVisual !== null) DFAVisual.reset();
+        }
+
         /**
          * steps forward in the conversion from NFA to DFA.
          */
@@ -269,14 +275,11 @@ app.controller('HomeController',
             console.log('initial nfa:', JSON.stringify(converter.nfa));
             converter.convert();
             console.log('resulting dfa:', JSON.stringify(converter.dfa));
-
             syncDFA();
         }
 
         $scope.sampleNFA1 = function() {
-            converter.reset();
-            NFAVisual.reset();
-            if (DFAVisual !== null) DFAVisual.reset();
+            $scope.reset();
             //add the sample NFA states
             NFAVisual.addNode('1');
             NFAVisual.addNode('2');
@@ -296,8 +299,7 @@ app.controller('HomeController',
         }
 
         $scope.sampleNFA2 = function() {
-            converter.reset();
-            NFAVisual.reset();
+            $scope.reset();
             if (DFAVisual !== null) DFAVisual.reset();
             NFAVisual.addNode('1');
             NFAVisual.addNode('2');
@@ -317,9 +319,8 @@ app.controller('HomeController',
         }
 
         $scope.sampleNFA3 = function() {
+            $scope.reset();
             var i;
-            converter.reset();
-            NFAVisual.reset();
             if (DFAVisual !== null) DFAVisual.reset();
             for (i = 0; i < 6; i++) {
                 NFAVisual.addNode(i.toString());

@@ -27,9 +27,10 @@
 
 .ForceGraph path {
   fill: none;
-  stroke: #666;
+  stroke: #333;
   stroke-width: 3px;
   cursor: pointer;
+  opacity: 0.75;
 }
 
 .ForceGraph .link text {

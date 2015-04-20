@@ -1,6 +1,5 @@
-#FSA-Animate
+#FSA-Animate - Visual NFA to DFA Converter
 ##[alexklibisz.github.io/FSA-Animate](alexklibisz.github.io/FSA-Animate/)
-##Animated Finite State Automata Conversions
 
 COSC312 Spring 2015 Honors by Contract Project, Alex Klibisz, Connor Minton
 

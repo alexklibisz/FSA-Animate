@@ -1,5 +1,3 @@
-/* Styles go here */
-
 .ForceGraph circle {
   stroke: #000;
   fill: #FFCC00;
@@ -15,13 +13,8 @@
 }
 
 .ForceGraph g.start circle {
-  /*fill: #66FFFF !important;*/
   stroke-width: 4px;
   stroke: #0000FF;
-}
-
-.ForceGraph g.selected.start circle {
-  /*fill: #5CE6E6 !important;*/
 }
 
 .ForceGraph g.accept circle {

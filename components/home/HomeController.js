@@ -139,8 +139,6 @@ app.controller('HomeController',
                         y = yDist * Math.floor(i / cols) + 100;
                     visualStates.put(label, label);
 
-                    if (label === '?') label = 'ES';
-
                     DFAVisual.addNode(label, x, y);
                 }
             }
@@ -155,10 +153,6 @@ app.controller('HomeController',
                     target = tmp[k],
                     id = [source, target].join('-'),
                     transition = visualTransitions.find(id);
-
-                if (source === '?') source = 'ES';
-                if (label === '?') label = 'ES';
-                if (target === '?') target = 'ES';
 
                 DFAVisual.addLink(label, source, target);
             }

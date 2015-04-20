@@ -34,7 +34,6 @@ app.controller('HomeController',
          * analagous to initialize NFA, but with no sample states and transitions.
          */
         $scope.initializeDFA = function() {
-            //extract the width and height of the div.
             var width = $('#DFA').innerWidth(),
                 height = $('#DFA').parent().innerHeight();
 
@@ -159,18 +158,16 @@ app.controller('HomeController',
             //Set DFAVisual start state
             if (converter.dfa.startState !== undefined) {
                 id = '#DFA-N' + converter.dfa.startState.replace(',', '_');
-                if(!d3.select(id).classed('start')) {
-                    d3.select(id).classed('start', true);   
-                }
+                d3.select(id).classed('start', true);   
             }
 
             //Set DFAVisual accept state
-            // tmp = converter.dfa.acceptStates;
-            // for (i = 0; i < tmp.length; i++) {
-            //     id = '#DFA-N' + tmp[i].replace(/,/g, '_');
-            //     d3.select(id).classed('selected', true);
-            // }
-            // $scope.setAcceptStates();
+            tmp = converter.dfa.acceptStates;
+            for (i = 0; i < tmp.length; i++) {
+                id = '#DFA-N' + tmp[i].replace(/,/g, '_');
+                d3.select(id).classed('accept', true);
+            }
+            $scope.setAcceptStates();
 
         }
 

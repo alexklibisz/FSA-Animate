@@ -138,7 +138,7 @@ app.controller('HomeController',
                     state = visualStates.find(label);
                 if (!state) {
                     var x = xDist * (i % cols) + 100,
-                        y = yDist * Math.floor(i / cols) + 100;
+                        y = yDist * Math.floor(i / cols) + 80;
                     visualStates.put(label, label);
 
                     DFAVisual.addNode(label, x, y);

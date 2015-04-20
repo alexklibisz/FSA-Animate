@@ -12,7 +12,6 @@ app.controller('HomeController',
 
         $scope.nfaInput = ' ';  //Used in $scope.update
 
-
         /**
          * called once the div with id 'NFA' has been initialized. 
          * 
@@ -279,13 +278,21 @@ app.controller('HomeController',
          * at 1 second intervals until pauseConversion is called.
          */
         $scope.incrementalConversion = function() {
+            converting = true;
             var step = function() {
-                if (converter.stepForward()) {
+                if (converter.stepForward() && converting) {
                     syncDFA();
                     $timeout(step, 1000);
                 }
             }
             $timeout(step, 0);
+        }
+
+        /**
+         * pauses the incremental conversion
+         */
+        $scope.pauseIncrementalConversion = function() {
+            converting = false;
         }
 
         /**

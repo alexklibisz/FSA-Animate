@@ -120,7 +120,7 @@ app.controller('HomeController',
             var i, tmp, label, visualStates = new Map(),
                 visualTransitions = new Map(),
                 cols = 2,
-                rows, xDist, yDist, id;
+                rows, xDist, yDist, id, lastTransition;
 
             if (DFAVisual.width > 500) cols = 4;
             else if (DFAVisual.width > 200) cols = 3;
@@ -138,6 +138,9 @@ app.controller('HomeController',
                     var x = xDist * (i % cols) + 100,
                         y = yDist * Math.floor(i / cols) + 100;
                     visualStates.put(label, label);
+
+                    if (label === '?') label = 'ES';
+
                     DFAVisual.addNode(label, x, y);
                 }
             }
@@ -152,22 +155,36 @@ app.controller('HomeController',
                     target = tmp[k],
                     id = [source, target].join('-'),
                     transition = visualTransitions.find(id);
+
+                if (source === '?') source = 'ES';
+                if (label === '?') label = 'ES';
+                if (target === '?') target = 'ES';
+
                 DFAVisual.addLink(label, source, target);
             }
 
             //Set DFAVisual start state
             if (converter.dfa.startState !== undefined) {
                 id = '#DFA-N' + converter.dfa.startState.replace(',', '_');
-                d3.select(id).classed('start', true);   
+                d3.select(id).classed('start', true);
             }
 
             //Set DFAVisual accept state
-            tmp = converter.dfa.acceptStates;
-            for (i = 0; i < tmp.length; i++) {
-                id = '#DFA-N' + tmp[i].replace(/,/g, '_');
-                d3.select(id).classed('accept', true);
+            if (converter.dfa.acceptStates !== undefined) {
+                tmp = converter.dfa.acceptStates;
+                for (i = 0; i < tmp.length; i++) {
+                    id = '#DFA-N' + tmp[i].replace(/,/g, '_');
+                    d3.select(id).classed('accept', true);
+                }
             }
-            $scope.setAcceptStates();
+
+            //Add 'last-added' class to the last element in the links array
+            tmp = DFAVisual.getLinks();
+            lastTransition = tmp[tmp.length - 1];
+            id = '#' + lastTransition.elementId;
+            d3.select('.last').classed('last', false);
+            d3.select(id).classed('last', true);
+            console.log('lastTransition', lastTransition.elementId);
 
         }
 

@@ -1,38 +1,49 @@
 .container-wide {
-	width: 100%;
+    width: 100%;
 }
 
 .navbar .container-wide {
-	width: 95%;
+    width: 95%;
 }
 
 .inline-title {
-	font-weight: bold;
-	font-size: large;
-	padding: 10px;
+    font-weight: bold;
+    font-size: large;
+    padding: 10px;
 }
 
-#NFA, #DFA {
-	min-height: 500px;
+#NFA,
+#DFA {
+    min-height: 500px;
+}
+
+g.link path.last {
+    stroke: red;
 }
 
 .alert p {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .panel {
-	min-height: 390px;
+    min-height: 390px;
 }
 
 .panel-title {
-	font-weight: bold;
+    font-weight: bold;
 }
-h1, h2, h3, h4, h5, h6 {
-	font-weight: bold;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: bold;
 }
 
 footer {
-	border-top: 2px solid black;
-	margin-top: 40px;
-	padding: 20px;
+    border-top: 2px solid black;
+    margin-top: 40px;
+    padding: 20px;
 }

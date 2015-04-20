@@ -34,8 +34,8 @@
 
 .ForceGraph path {
   fill: none;
-  stroke: #333;
-  stroke-width: 2px;
+  stroke: #666;
+  stroke-width: 3px;
   cursor: pointer;
 }
 
@@ -45,9 +45,4 @@
   font-size: 1.6em;
   stroke: white;
   stroke-width: 1px;
-}
-
-
-.ForceGraph .link textPath {
-  text-anchor: start;
 }

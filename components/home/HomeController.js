@@ -10,6 +10,9 @@ app.controller('HomeController',
             converter = new Converter(),
             converting = false;
 
+        $scope.nfaInput = ' ';
+
+
         /**
          * called once the div with id 'NFA' has been initialized. 
          * 
@@ -98,6 +101,8 @@ app.controller('HomeController',
             d3.selectAll('.accept').each(function(d, i) {
                 NFA.acceptStates.push(d.id);
             });
+
+            $scope.updateNFAInput();
         }
 
         /** 
@@ -281,6 +286,74 @@ app.controller('HomeController',
                 }
             }
             $timeout(step, 0);
+        }
+
+        /**
+         * Build a user-friendly JSON object that will be displayed
+         * in the NFA JSON input field.
+         */
+        $scope.updateNFAInput = function() {
+            var userNFA = {
+                states: [],
+                transitions: [],
+                start: '',
+                accept: []
+            }, tmp, i;
+
+            tmp = NFAVisual.getNodes();
+            for (i = 0; i < tmp.length; i++) {
+                userNFA.states.push(tmp[i].label);
+            }
+
+            tmp = NFAVisual.getLinks();
+            for (i = 0; i < tmp.length; i++) {
+                userNFA.transitions.push({
+                    symbol: tmp[i].label,
+                    source: tmp[i].source.label,
+                    target: tmp[i].target.label
+                });
+            }
+
+            userNFA.start = NFA.startState;
+            tmp = NFA.acceptStates;
+            for (i = 0; i < tmp.length; i++) {
+                userNFA.accept.push(tmp[i]);
+            }
+
+            this.nfaInput = JSON.stringify(userNFA, null, 2);
+        }
+
+        $scope.parseNFAInput = function() {
+            var userNFA = JSON.parse(this.nfaInput),
+                tmp, i, id;
+
+            // Add the nodes
+            tmp = userNFA.states;
+            for(i = 0; i < tmp.length; i++) {
+                NFAVisual.addNode(tmp[i]);
+            }
+
+            // Add the links
+            tmp = userNFA.transitions;
+            for(i = 0; i < tmp.length; i++) {
+                NFAVisual.addLink(tmp[i].symbol, tmp[i].source, tmp[i].target);
+            }
+
+            // Set the start state
+            d3.selectAll('.start').each(function(d) {
+                d3.select(d.elementId).classed('start', false);
+            })
+            id = '#NFA-N' + userNFA.start;
+            d3.select(id).classed('start', true);
+
+            // Set the accept states
+            tmp = userNFA.accept;
+            for(i = 0; i < tmp.length; i++) {
+                id = '#NFA-N' + tmp[i];
+                d3.select(id).classed('accept', true);
+            }
+            
+            syncNFA();
         }
 
         $scope.sampleNFA1 = function() {

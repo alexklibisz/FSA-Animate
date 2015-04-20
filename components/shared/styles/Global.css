@@ -12,10 +12,10 @@
     padding: 10px;
 }
 
-#NFA,
-#DFA {
-    min-height: 500px;
+#NFA, #DFA {
+    height: 450px;
 }
+
 
 g.link path.last {
     stroke: red;

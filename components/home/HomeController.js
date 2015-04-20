@@ -10,7 +10,7 @@ app.controller('HomeController',
             converter = new Converter(),
             converting = false;
 
-        $scope.nfaInput = ' ';
+        $scope.nfaInput = ' ';  //Used in $scope.update
 
 
         /**
@@ -323,36 +323,35 @@ app.controller('HomeController',
             this.nfaInput = JSON.stringify(userNFA, null, 2);
         }
 
+        /**
+         * Parse the JSON NFA input and reflect the changes
+         * in NFAVisual
+         */
         $scope.parseNFAInput = function() {
             var userNFA = JSON.parse(this.nfaInput),
                 tmp, i, id;
-
             // Add the nodes
             tmp = userNFA.states;
             for(i = 0; i < tmp.length; i++) {
                 NFAVisual.addNode(tmp[i]);
             }
-
             // Add the links
             tmp = userNFA.transitions;
             for(i = 0; i < tmp.length; i++) {
                 NFAVisual.addLink(tmp[i].symbol, tmp[i].source, tmp[i].target);
             }
-
             // Set the start state
             d3.selectAll('.start').each(function(d) {
                 d3.select(d.elementId).classed('start', false);
             })
             id = '#NFA-N' + userNFA.start;
             d3.select(id).classed('start', true);
-
             // Set the accept states
             tmp = userNFA.accept;
             for(i = 0; i < tmp.length; i++) {
                 id = '#NFA-N' + tmp[i];
                 d3.select(id).classed('accept', true);
             }
-            
             syncNFA();
         }
 

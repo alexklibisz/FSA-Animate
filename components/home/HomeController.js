@@ -278,7 +278,9 @@ app.controller('HomeController',
          */
         $scope.completeConversion = function() {
             while (converter.stepForward());
+            console.log('resulting dfa', converter.dfa);
             syncDFA();
+
         }
 
         /**
@@ -394,28 +396,26 @@ app.controller('HomeController',
 
         $scope.sampleNFA2 = function() {
             $scope.reset();
-            if (DFAVisual !== null) DFAVisual.reset();
+            
+
+
             NFAVisual.addNode('1');
             NFAVisual.addNode('2');
             NFAVisual.addNode('3');
-            NFAVisual.addNode('4');
 
-            NFAVisual.addLink('0,1', '1', '1');
-            NFAVisual.addLink('1', '1', '2');
-            NFAVisual.addLink('0,1', '2', '3');
-            NFAVisual.addLink('0,1', '3', '4');
+            NFAVisual.addLink('E', '1', '2');
+            NFAVisual.addLink('a', '1', '3');
+            NFAVisual.addLink('a,b', '3', '2');
 
             d3.select('#NFA-N1').classed('selected', true);
             $scope.setStartState();
-            d3.select('#NFA-N1').classed('selected', false);
-            d3.select('#NFA-N4').classed('selected', true);
+            d3.select('#NFA-N2').classed('selected', true);
             $scope.setAcceptStates();
         }
 
         $scope.sampleNFA3 = function() {
             $scope.reset();
             var i;
-            if (DFAVisual !== null) DFAVisual.reset();
             for (i = 0; i < 6; i++) {
                 NFAVisual.addNode(i.toString());
             }

@@ -1,13 +1,12 @@
 <div class="alert alert-info">
-    <p>Double-click a state to select or de-select it. "E" is reserved for &epsilon;-transitions.
-        <a href="" ng-click="sampleNFA1()">Sample NFA 1</a> |
+    <h4>1. Construct the NFA <small>(or use a sample: <a href="" ng-click="sampleNFA1()">Sample NFA 1</a> |
         <a href="" ng-click="sampleNFA2()">Sample NFA 2</a> |
-        <a href="" ng-click="sampleNFA3()">Sample NFA 3</a>
+        <a href="" ng-click="sampleNFA3()">Sample NFA 3</a>)</small></h4>
+    <p>Use the controls below. Double-click a state to select or de-select it. "E" is reserved for &epsilon;-transitions.
     </p>
 </div>
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <span class="inline-title">Construct NFA: </span>
         <button class="btn btn-xs btn-default" ng-click="addState()">Add State</button>
         <button class="btn btn-xs btn-default" ng-click="addTransition()">Add Transition</button>
         <button class="btn btn-xs btn-default" ng-click="deleteSelected()">Delete Selected</button>

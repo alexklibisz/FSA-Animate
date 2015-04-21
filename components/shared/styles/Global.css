@@ -52,3 +52,7 @@ footer {
     margin-top: 40px;
     padding: 20px;
 }
+
+.alert-info {
+    color: #333;
+}

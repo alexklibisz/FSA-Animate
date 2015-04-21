@@ -258,6 +258,10 @@ app.controller('HomeController',
 
         $scope.reset = function() {
             NFAVisual.reset();
+            if (DFAVisual !== null) {
+              DFAVisual.reset();
+              converter.reset();
+            }
             syncNFA();
         }
 
